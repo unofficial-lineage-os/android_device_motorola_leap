@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- leap D20: from stock framework-res__leap__auto_generated_rro_vendor.apk and
+     framework-res__leap_g__auto_generated_rro_product.apk (aapt dump), plus the AOSP fold keys
+     stock does not need (it uses Moto's CLI shell for the cover panel; we use AOSP's fold model). -->
+<resources>
+    <!-- Fold: states per fold/device_state_configuration.xml (stock's) -->
+    <integer-array name="config_foldedDeviceStates">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </integer-array>
+    <integer-array name="config_openDeviceStates">
+        <item>5</item>
+        <item>6</item>
+    </integer-array>
+    <integer-array name="config_deviceStatesOnWhichToSleep">
+        <item>0</item>
+        <item>1</item>
+    </integer-array>
+    <integer-array name="config_rearDisplayDeviceStates">
+    </integer-array>
+    <!-- Per-display resource index (D23, from arcfox): without it DisplayUtils.getDisplayUniqueIdConfigIndex()
+         returns -1 and the cover panel inherits the inner panel's cutout and corners. -->
+    <string-array name="config_displayUniqueIdArray" translatable="false">
+        <item>local:4630947043778501779</item>
+        <item>local:4630947043778501780</item>
+    </string-array>
+    <!-- Hinge line across the inner panel (1224x2992, fold at y=1496) for WindowManager Jetpack -->
+    <string name="config_display_features" translatable="false">fold-[0,1496,1224,1496]</string>
+    <!-- device state -> posture (1 folded, 2 half-open, 3 open) -->
+    <string-array name="config_device_state_postures" translatable="false">
+        <item>0:1</item>
+        <item>1:1</item>
+        <item>2:1</item>
+        <item>3:1</item>
+        <item>4:2</item>
+        <item>5:3</item>
+        <item>6:3</item>
+    </string-array>
+    <integer-array name="config_halfFoldedDeviceStates">
+        <item>4</item>
+    </integer-array>
+    <integer-array name="config_deviceStatesOnWhichToWakeUp">
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </integer-array>
+    <bool name="config_supportsConcurrentInternalDisplays">false</bool>
+    <bool name="config_localDisplaysMirrorContent">false</bool>
+    <bool name="config_lidControlsSleep">false</bool>
+    <!-- zeekr: fold lock behavior setting; do not mask a cutout on the cover panel -->
+    <bool name="config_fold_lock_behavior">true</bool>
+    <!-- D30: cover-panel camera block is deliberately NOT a cutout (arcfox): on AOSP a bottom cutout
+         becomes a black masked band / full-width dead strip. Wallpaper covers the whole panel; the dock,
+         nav bar and keyboard are kept above the cameras via Launcher3/SystemUI dimens instead. -->
+    <string name="config_secondaryBuiltInDisplayCutout" translatable="false"></string>
+    <bool name="config_maskSecondaryBuiltInDisplayCutout">false</bool>
+
+    <!-- Display cutout + status bar (stock framework-res__leap_g__auto_generated_rro_product.apk):
+         hole-punch 116x130 px centred at the top of the 1224x2992 inner panel -->
+    <string name="config_mainBuiltInDisplayCutout" translatable="false">M -58,0 L 58,0 L 58,130 L -58,130 Z</string>
+    <dimen name="status_bar_height_portrait">130px</dimen>
+    <dimen name="status_bar_height_landscape">28dp</dimen>
+    <dimen name="config_dialogCornerRadius">24dp</dimen>
+    <string name="config_mainBuiltInDisplayCutoutRectApproximation" translatable="false">M -58,0 L 58,0 L 58,130 L -58,130 Z</string>
+    <dimen name="rounded_corner_radius">120px</dimen>
+    <dimen name="rounded_corner_radius_top">120px</dimen>
+    <dimen name="rounded_corner_radius_bottom">120px</dimen>
+
+    <!-- Navigation: gesture by default (arcfox) -->
+    <integer name="config_navBarInteractionMode">2</integer>
+    <bool name="config_navBarCanMove">false</bool>
+    <bool name="config_navBarTapThrough">true</bool>
+    <bool name="config_imeDrawsImeNavBar">true</bool>
+    <bool name="config_navBarNeedsScrim">false</bool>
+    <integer name="config_navBarOpacityMode">2</integer>
+    <bool name="config_allowSeamlessRotationDespiteNavBarMoving">true</bool>
+    <bool name="config_navBarAlwaysShowOnSideEdgeGesture">true</bool>
+    <bool name="config_attachNavBarToAppDuringTransition">true</bool>
+    <dimen name="config_backGestureInset">30dp</dimen>
+
+    <!-- Refresh rate (stock vendor RRO) -->
+    <!-- 120 like stock: 24/60/120 share a seamless mode group, 165 is its own group (non-seamless
+         switch on every touch boost = the "snapping" ripple). 165 stays selectable in Settings. -->
+    <integer name="config_defaultPeakRefreshRate">120</integer>
+    <integer name="config_defaultRefreshRate">0</integer>
+    <integer name="config_defaultMinRefreshRate">24</integer>
+    <integer name="config_defaultFixedOnPeakRefreshRate">0</integer>
+
+    <!-- Brightness (stock vendor RRO) -->
+    <bool name="config_automatic_brightness_available">true</bool>
+    <item name="config_screenBrightnessSettingDefaultFloat" format="float" type="dimen">0.38189</item>
+    <item name="config_screenBrightnessSettingMinimumFloat" format="float" type="dimen">0.02649</item>
+    <item name="config_screenBrightnessSettingMaximumFloat" format="float" type="dimen">1.0</item>
+    <item name="config_screenBrightnessDimFloat" format="float" type="dimen">0.02649</item>
+    <item name="config_screenBrightnessDozeFloat" format="float" type="dimen">0.5</item>
+
+    <!-- Misc (stock vendor RRO) -->
+    <bool name="config_nightDisplayAvailable">true</bool>
+    <bool name="config_unplugTurnsOnScreen">true</bool>
+    <bool name="config_showNavigationBar">true</bool>
+    <bool name="config_hotswapCapable">true</bool>
+    <bool name="config_useDevInputEventForAudioJack">true</bool>
+    <bool name="config_wifi_dual_band_support">true</bool>
+    <bool name="config_wifi_background_scan_support">true</bool>
+    <bool name="config_sustainedPerformanceModeSupported">true</bool>
+    <bool name="config_enableMultiUserUI">true</bool>
+    <integer name="config_multiuserMaximumUsers">4</integer>
+    <bool name="config_device_volte_available">true</bool>
+    <bool name="config_device_vt_available">true</bool>
+    <bool name="config_device_wfc_ims_available">true</bool>
+    <bool name="config_carrier_volte_available">true</bool>
+    <bool name="config_dozeAfterScreenOff">true</bool>
+    <bool name="config_dozeAlwaysOnDisplayAvailable">true</bool>
+    <bool name="config_double_tap_to_wake_supported">true</bool>
+    <integer name="config_stableDeviceDisplayWidth">1080</integer>
+    <integer name="config_stableDeviceDisplayHeight">2400</integer>
+</resources>

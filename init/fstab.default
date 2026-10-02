@@ -1,0 +1,47 @@
+# Android fstab for Motorola Razr Ultra 2025 (leap)
+# Structure matched VERBATIM to stock first_stage_ramdisk/fstab.qcom (A15 V2VL35.42-148-2-5-1),
+# extracted from the stock vendor_boot.img ramdisk. See findings.md D12.
+#
+# Two entries per logical partition (erofs then ext4) is STOCK'S pattern and is deliberate:
+# fs_mgr tries each entry for a mount point in order until one mounts, so the same fstab works
+# whether a partition was built as EROFS or ext4. Our build currently produces ext4 for
+# system/system_ext/product and EROFS for vendor/vendor_dlkm/system_dlkm, but hard-coding one
+# type per mount point makes the fstab silently wrong the moment a filesystem type changes.
+#
+# ONE DELIBERATE DEVIATION FROM STOCK: system_dlkm uses avb=vbmeta_system, not stock's
+# avb=vbmeta. Our BoardConfig sets
+#   BOARD_AVB_VBMETA_SYSTEM := system system_dlkm system_ext product
+# so the system_dlkm hashtree descriptor lives in vbmeta_system.img; vbmeta.img has no
+# system_dlkm descriptor (verified with avbtool info_image). Copying stock's value here would
+# point fs_mgr at a descriptor that does not exist.
+#
+#<src>                    <mnt_point>          <type>  <mnt_flags and options>                    <fs_mgr_flags>
+system                                                  /system                erofs   ro                                                   wait,slotselect,avb=vbmeta_system,logical,first_stage_mount,avb_keys=/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey:/avb/t-gsi.avbpubkey:/avb/u-gsi.avbpubkey:/avb/v-gsi.avbpubkey
+system                                                  /system                ext4    ro,barrier=1,discard                                 wait,slotselect,avb=vbmeta_system,logical,first_stage_mount,avb_keys=/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey:/avb/t-gsi.avbpubkey:/avb/u-gsi.avbpubkey:/avb/v-gsi.avbpubkey
+system_ext                                              /system_ext            erofs   ro                                                   wait,slotselect,avb=vbmeta_system,logical,first_stage_mount
+system_ext                                              /system_ext            ext4    ro,barrier=1,discard                                 wait,slotselect,avb=vbmeta_system,logical,first_stage_mount
+product                                                 /product               erofs   ro                                                   wait,slotselect,avb=vbmeta_system,logical,first_stage_mount
+product                                                 /product               ext4    ro,barrier=1,discard                                 wait,slotselect,avb=vbmeta_system,logical,first_stage_mount
+vendor                                                  /vendor                erofs   ro                                                   wait,slotselect,avb=vbmeta,logical,first_stage_mount
+vendor                                                  /vendor                ext4    ro,barrier=1,discard                                 wait,slotselect,avb=vbmeta,logical,first_stage_mount
+vendor_dlkm                                             /vendor_dlkm           erofs   ro                                                   wait,slotselect,avb=vbmeta,logical,first_stage_mount
+vendor_dlkm                                             /vendor_dlkm           ext4    ro,barrier=1,discard                                 wait,slotselect,avb=vbmeta,logical,first_stage_mount
+system_dlkm                                             /system_dlkm           erofs   ro                                                   wait,slotselect,avb=vbmeta_system,logical,first_stage_mount
+system_dlkm                                             /system_dlkm           ext4    ro,barrier=1,discard                                 wait,slotselect,avb=vbmeta_system,logical,first_stage_mount
+/dev/block/by-name/boot                                 /boot                  emmc    defaults                                             slotselect,avb=vbmeta,first_stage_mount
+/dev/block/by-name/init_boot                            /init_boot             emmc    defaults                                             slotselect,avb=vbmeta,first_stage_mount
+/dev/block/by-name/vendor_boot                          /vendor_boot           emmc    defaults                                             slotselect,avb=vbmeta,first_stage_mount
+/dev/block/by-name/dtbo                                 /dtbo                  emmc    defaults                                             slotselect,avb=vbmeta,first_stage_mount
+/dev/block/by-name/recovery                             /recovery              emmc    defaults                                             slotselect,avb=vbmeta,first_stage_mount
+/dev/block/by-name/metadata                             /metadata              f2fs    noatime,nosuid,nodev,discard                         wait,check,formattable,first_stage_mount
+/dev/block/by-name/logks                                /mnt/product/logks     ext4    noatime,nosuid,nodev,barrier=1                       wait,check,formattable,nofail,first_stage_mount
+/dev/block/bootdevice/by-name/persist                   /mnt/vendor/persist    ext4    noatime,nosuid,nodev,barrier=1                       wait
+/dev/block/bootdevice/by-name/prodpersist               /mnt/product/persist   ext4    noatime,nosuid,nodev,barrier=1                       wait,formattable,nofail
+/dev/block/bootdevice/by-name/userdata                  /data                  f2fs    noatime,nosuid,nodev,discard,reserve_root=32768,resgid=1065,fsync_mode=nobarrier,inlinecrypt   latemount,wait,check,formattable,fileencryption=aes-256-xts:aes-256-cts:v2+inlinecrypt_optimized+wrappedkey_v0,keydirectory=/metadata/vold/metadata_encryption,metadata_encryption=aes-256-xts:wrappedkey_v0,quota,reservedsize=128M,sysfs_path=/sys/devices/platform/soc/1d84000.ufshc,checkpoint=fs
+/dev/block/bootdevice/by-name/misc                      /misc                  emmc    defaults                                             defaults
+/devices/platform/soc/*.ssusb/*.dwc3/xhci-hcd.*.auto*   /storage/usbotg        vfat    nosuid,nodev                                         wait,voldmanaged=usbotg:auto
+/dev/block/bootdevice/by-name/modem                     /vendor/firmware_mnt   ext4    ro,nosuid,nodev,context=u:object_r:firmware_file:s0  wait,slotselect
+/dev/block/bootdevice/by-name/dsp                       /vendor/dsp            ext4    ro,nosuid,nodev,barrier=1                            wait,slotselect
+/dev/block/bootdevice/by-name/bluetooth                 /vendor/bt_firmware    ext4    ro,nosuid,nodev,context=u:object_r:bt_firmware_file:s0 wait,slotselect
+/dev/block/bootdevice/by-name/spunvm                    /mnt/vendor/spunvm     vfat    noatime,nosuid,nodev,context=u:object_r:vendor_spunvm_file:s0   wait,check,formattable
+/dev/block/bootdevice/by-name/fsg                       /vendor/fsg            ext4    ro,nosuid,nodev,context=u:object_r:fsg_file:s0       wait,slotselect

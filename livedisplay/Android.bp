@@ -1,0 +1,26 @@
+//
+// SPDX-FileCopyrightText: The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+// leap (Motorola Razr Ultra 2025) LiveDisplay HAL: IAntiFlicker ("DC dimming") bridged to
+// Motorola's com.motorola.hardware.display.panel IDisplayPanel::setDcMode (AIDL V2, txn 4).
+// leap has no writable DC sysfs node (panelDC on the DRM connector is 0444); stock's
+// displaypanel.default.so sets DC through /dev/dri/card0, so we drive the stock HAL instead.
+
+cc_binary {
+    name: "vendor.lineage.livedisplay-service.leap",
+    vendor: true,
+    relative_install_path: "hw",
+    init_rc: ["vendor.lineage.livedisplay-service.leap.rc"],
+    vintf_fragments: ["vendor.lineage.livedisplay-service.leap-af.xml"],
+    srcs: [
+        "AntiFlicker.cpp",
+        "service.cpp",
+    ],
+    shared_libs: [
+        "libbase",
+        "libbinder_ndk",
+        "libutils",
+        "vendor.lineage.livedisplay-V1-ndk",
+    ],
+}

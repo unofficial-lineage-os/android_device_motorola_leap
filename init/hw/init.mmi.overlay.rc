@@ -1,0 +1,380 @@
+
+# This is for Moto arc device init rc file
+
+import /vendor/etc/init/hw/init.vendor.st21nfc.rc
+import /vendor/etc/init/hw/init.mmi.graphics.rc
+
+on early-init
+    exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -r -d /vendor/lib/modules zram
+
+on late-init
+    exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules moto_swap
+
+on fs
+    insmod /vendor/lib/modules/mmi_annotate.ko
+    insmod /vendor/lib/modules/mmi_info.ko
+    insmod /vendor/lib/modules/mmi_relay.ko
+    insmod /vendor/lib/modules/wl2868c.ko
+    insmod /vendor/lib/modules/sensors_class.ko
+    insmod /vendor/lib/modules/sx937x_multi.ko
+    insmod /vendor/lib/modules/hall_phone_case.ko
+    insmod /vendor/lib/modules/touchscreen_mmi.ko
+    insmod /vendor/lib/modules/goodix_brl_mmi.ko
+    insmod /vendor/lib/modules/focaltech_v3_5.ko
+    insmod /vendor/lib/modules/con_dfpar.ko
+    #zram wb
+    mount_all /vendor/etc/fstab.qcom.zram --early
+
+on post-fs && property:ro.boot.secure_hardware=0
+    write /proc/con_dfpar/con_dfpar_enable 1
+    setprop vendor.wv.oemcrypto.debug.enable_prov40 false
+
+on post-fs
+    start vendor.copy_qc_cert
+
+on early-boot
+    chown system system /dev/goodix_fp
+    chmod 0664 /dev/goodix_fp
+    mkdir /data/vendor/gf_data 0770 system system
+    mkdir /mnt/vendor/persist/goodix 0770 system system
+
+    # Permission for Health Storage HAL
+    chown system system /sys/devices/platform/soc/1d84000.ufshc/ufshid/trigger
+    chown system system /sys/devices/platform/soc/1d84000.ufshc/ufshid/color
+
+# Add for after-sales ois gyro cal
+    mkdir /mnt/vendor/persist/camera/gyro_compat 0770 vendor_tcmd camera
+# Create directory for wireless charge test in factory
+    mkdir /data/vendor/wlc 0775 vendor_tcmd system
+    chmod 0775  /mnt/vendor/persist/sensors
+    chown system system /mnt/vendor/persist/sensors/als_mpc_rawdata
+    chmod 0664 /mnt/vendor/persist/sensors/als_mpc_rawdata
+    chmod 0644 /mnt/vendor/persist/sensors/registry/registry/mxm1120_0.json.mxm1120_0_platform.fac_cal
+# change permission of backlight brightness for tcmd daemon
+    chmod 664 /sys/class/backlight/panel1-backlight/brightness
+
+    # for ghost log capture
+    chmod 0444 /dev/tp_tools
+
+# insmod qorvo driver at early-boot stage
+    insmod /vendor_dlkm/lib/modules/qm35_spi.ko
+
+# wlan subsystem auto recovery from crash
+on early-boot
+    write /sys/kernel/cnss/recovery 1
+
+on boot
+    # allow TCMD to access cci
+    chmod 0660 /dev/cci_intf
+    chown system camera /dev/cci_intf
+
+    # Touch game mode control
+    chown system system /sys/class/touchscreen/primary/rotate
+    chmod 0660 /sys/class/touchscreen/primary/rotate
+    chown system system /sys/class/touchscreen/primary/interpolation
+    chmod 0660 /sys/class/touchscreen/primary/interpolation
+    chown system system /sys/class/touchscreen/primary/edge
+    chmod 0660 /sys/class/touchscreen/primary/edge
+    chown system system /sys/class/touchscreen/primary/sensitivity
+    chmod 0660 /sys/class/touchscreen/primary/sensitivity
+    chown system system /sys/class/touchscreen/primary/gesture
+    chmod 0660 /sys/class/touchscreen/primary/gesture
+    chown system system /sys/class/touchscreen/secondary/gesture
+    chmod 0660 /sys/class/touchscreen/secondary/gesture
+    chown system system /sys/class/touchscreen/primary/sample
+    chmod 0660 /sys/class/touchscreen/primary/sample
+    chown system system /sys/class/touchscreen/primary/log_trigger
+    chmod 0660 /sys/class/touchscreen/primary/log_trigger
+    chown system system /sys/class/touchscreen/secondary/stowed
+    chmod 0660 /sys/class/touchscreen/secondary/stowed
+    chown system system /sys/class/touchscreen/secondary/pocket_mode
+    chmod 0660 /sys/class/touchscreen/secondary/pocket_mode
+
+    # change permission for goodix TP
+    chmod 0664 /dev/gtp_tools
+
+    #change vibrator test node file access permission
+    chmod 0660 /sys/class/qcom-haptics/enable_play
+    chown vendor_tcmd system /sys/class/qcom-haptics/enable_play
+
+    #bluetooth sar
+    write /data/vendor/radio/bluetooth_sar disable
+    chmod 0644 /data/vendor/radio/bluetooth_sar
+    chown radio /data/vendor/radio/bluetooth_sar
+
+    # max readyfor apps
+    setprop ro.vendor.config.max_readyfor_apps 4
+
+    # vibrator hal need to access this sysfs node for AF noise issue
+    chown cameraserver cameraserver /sys/devices/platform/soc/soc:mot,cam-actuator/onekey_actuator
+    chmod 0660 /sys/devices/platform/soc/soc:mot,cam-actuator/onekey_actuator
+
+    # CLI touch factory test
+    chown vendor_tcmd system /proc/goodix_ts.0/auto_test
+    chown vendor_tcmd system /proc/goodix_ts.0/auto_test_result
+
+    # for eSE provisioning
+    setprop ro.vendor.oem.device ${ro.product.vendor.device}
+    setprop ro.vendor.oem.name ${ro.product.vendor.name}
+    setprop ro.vendor.oem.model ${ro.product.vendor.model}
+    setprop ro.vendor.oem.brand ${ro.product.vendor.brand}
+    setprop ro.vendor.oem.manufacturer ${ro.product.vendor.manufacturer}
+    setprop ro.vendor.oem.serialno ${ro.serialno}
+
+
+    # Use dirty bytes
+    write /proc/sys/vm/dirty_background_bytes 26214400
+    write /proc/sys/vm/dirty_bytes 104857600
+
+service vendor.netconfig /vendor/bin/vendor_netconfig
+    class main
+    user root
+    group root system
+    oneshot
+    disabled
+
+on boot && property:ro.bootmode=mot-factory
+    start vendor.netconfig
+
+on property:ro.bootmode=mot-factory
+    write /sys/class/leds/charging/brightness 10
+
+
+service vendor.start_dhrystone /vendor/bin/init.dhrystone.sh -d 300
+    class main
+    user root
+    group root system
+    oneshot
+    disabled
+
+service vendor.stop_dhrystone /vendor/bin/init.dhrystone.sh -s stop
+    class main
+    user root
+    group root system
+    oneshot
+    disabled
+
+on property:persist.vendor.dhrystone.status=0
+    start vendor.stop_dhrystone
+    start thermal-engine
+
+service vendor.mot_vsync_psd /vendor/bin/mot_vsync_psd
+    class late_start
+    user root
+
+service vendor.capsense_reset /vendor/bin/capsense_reset
+   class core
+   user system
+   group system input
+   disabled
+
+service vendor.phone_case_hall /vendor/bin/phone_case_hall
+   class core
+   user system
+   oneshot
+   disabled 
+
+on property:persist.vendor.dhrystone.status=1
+    stop thermal-engine
+    start vendor.start_dhrystone
+
+service vendor.copy_qc_cert /vendor/bin/copy_qc_cert.sh
+    class main
+    user system
+    group root system
+    oneshot
+    disabled
+
+service vendor.mot_flip_count /vendor/bin/mot_flip_count
+   class core
+   user system
+   group system input
+   disabled
+
+service vendor.mmi-cap-sh /vendor/bin/init.mmi.cap.sh
+    class core
+    user root
+    oneshot
+
+service vendor.mmi-wls-sh /vendor/bin/init.mmi.wls.sh
+    class main
+    user root
+    group root system
+    oneshot
+    disabled
+
+service vendor.ultrasound_cal /vendor/bin/ultrasound_cal.sh -c
+    class main
+    user root
+    group system
+    oneshot
+    disabled
+
+on property:vendor.ultrasound.cal.action=start
+    start vendor.ultrasound_cal
+
+on property:ro.boot.radio=JPN
+    setprop ro.boot.strongbox_support false
+
+on property:ro.product.is_prc=true
+    setprop vendor.sensor.use_prc_config true
+
+on property:sys.boot_completed=1
+    start vendor.capsense_reset
+    start vendor.mot_flip_count
+    start vendor.phone_case_hall
+    #change adsp pmic test command file access permission
+    chown vendor_tcmd system /sys/devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:mmi,qti-glink-charger/tcmd
+    chown vendor_tcmd system /sys/devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:mmi,qti-glink-charger/force_pmic_icl
+    chown vendor_tcmd system /sys/devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:mmi,qti-glink-charger/force_usb_suspend
+    chown vendor_tcmd system /sys/devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:mmi,qti-glink-charger/force_wls_en
+    chown vendor_tcmd system /sys/devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:mmi,qti-glink-charger/force_wls_curr_max
+    chown vendor_tcmd system /sys/devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:mmi,qti-glink-charger/force_wls_volt_max
+    chown vendor_tcmd system /sys/devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:mmi,qti-glink-charger/addr
+    chown vendor_tcmd system /sys/devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:mmi,qti-glink-charger/data
+    chown vendor_tcmd system /sys/module/bm_adsp_ulog/parameters/debug_enabled
+    chown vendor_tcmd system /sys/module/mmi_glink_charger/parameters/factory_kill_disable
+    chmod 0660 /sys/devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:mmi,qti-glink-charger/tcmd
+    chmod 0660 /sys/devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:mmi,qti-glink-charger/force_pmic_icl
+    chmod 0660 /sys/devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:mmi,qti-glink-charger/force_usb_suspend
+    chmod 0660 /sys/devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:mmi,qti-glink-charger/force_wls_en
+    chmod 0660 /sys/devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:mmi,qti-glink-charger/force_wls_curr_max
+    chmod 0660 /sys/devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:mmi,qti-glink-charger/force_wls_volt_max
+    chmod 0660 /sys/devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:mmi,qti-glink-charger/addr
+    chmod 0660 /sys/devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:mmi,qti-glink-charger/data
+    chmod 0660 /sys/module/bm_adsp_ulog/parameters/debug_enabled
+    chmod 0660 /sys/module/mmi_glink_charger/parameters/factory_kill_disable
+    # start wireless chip firmware upgrate
+    start vendor.mmi-wls-sh
+    #change flip battery charging test command file access permission
+    wait /sys/class/power_supply/balance_slave/balance_chip_en 2
+    chown vendor_tcmd system /sys/class/power_supply/balance_slave/balance_chip_en
+    chown vendor_tcmd system /sys/class/power_supply/balance_slave/balance_chrg_dis
+    chown vendor_tcmd system /sys/class/power_supply/balance_slave/input_current_limit
+
+    # Change force_charging_enable access mode and permission for tcmd
+    wait /sys/class/power_supply/battery/device/force_charging_enable 2
+    chmod 0664 /sys/class/power_supply/battery/device/force_charging_enable
+    chown vendor_tcmd system /sys/class/power_supply/battery/device/force_charging_enable
+
+    # Set adaptive charging perms for HAL
+    chown system system /sys/module/qpnp_adaptive_charge/parameters/upper_limit
+    chown system system /sys/module/qpnp_adaptive_charge/parameters/lower_limit
+
+    # Set gyro.fac_cal.bias perms for camera
+    chmod 0666 /mnt/vendor/persist/sensors/registry/registry/lsm6dso_1.json.lsm6dso_1_platform.gyro.fac_cal.bias
+
+    copy /vendor/etc/qms_log_config /data/vendor/qms_logs/config/qms_log_config
+    chown radio radio /data/vendor/qms_logs/config/qms_log_config
+    chmod 0700 /data/vendor/qms_logs/config/qms_log_config
+
+    #set game quick touch feature enable
+    setprop debug.vendor.perf.smart_touch 1
+
+#Override fwpath string when wpa_supplicant server was killed
+on property:vendor.wifi.station=true
+    write /sys/module/qca_cld3_peach_v2/parameters/sar_sta enabled
+
+on property:vendor.wifi.station=false
+    write /sys/module/qca_cld3_peach_v2/parameters/sar_sta disabled
+
+on property:vendor.wifi.tethering=false
+    write /sys/module/qca_cld3_peach_v2/parameters/sar_mhs disabled
+
+on property:vendor.wifi.tethering=true
+    write /sys/module/qca_cld3_peach_v2/parameters/sar_mhs enabled
+
+on property:vendor.wifi.station=true && property:ro.product.is_production=false && property:vendor.wifi.stx_log=1
+    write /sys/class/net/wlan0/unit_test_target "0x48 2 597 4"
+    write /sys/class/net/wlan0/unit_test_target "67 2 51 4"
+    write /sys/class/net/wlan0/unit_test_target "67 3 42 0 0x500000"
+
+on property:persist.mot_bt.sar_state=connect
+    write /data/vendor/radio/bluetooth_sar connect
+
+on property:persist.mot_bt.sar_state=disconnect
+    write /data/vendor/radio/bluetooth_sar disconnect
+
+#update the high watermark by set efk value
+on property:vendor.post_boot.parsed=1
+    setprop sys.sysctl.extra_free_kbytes ${sys.sysctl.extra_free_kbytes}
+
+on property:vendor.usb.headset_reset=2
+    write /sys/bus/platform/devices/${ro.boot.usb.dwc3_msm:-a600000.ssusb}/mode none
+
+on property:vendor.usb.headset_reset=0
+    wait /sys/bus/platform/devices/${ro.boot.usb.dwc3_msm:-a600000.ssusb}/headset_reset_delay 2
+    write /sys/bus/platform/devices/${ro.boot.usb.dwc3_msm:-a600000.ssusb}/mode host
+
+on property:sys.usb.current_limit=1
+    write /sys/class/power_supply/battery/device/force_charger_suspend 1
+
+on property:sys.usb.current_limit=0
+   write /sys/class/power_supply/battery/device/force_charger_suspend 0
+
+on property:vendor.uwb.service.ctrl=0
+    stop vendor.uwb_hal
+
+on property:vendor.uwb.service.ctrl=1
+    start vendor.uwb_hal
+
+# dynamic update vsync property
+on property:sys.display.pluggable_vsync_prioritized=1
+    setprop vendor.display.pluggable_vsync_prioritized 1
+
+on property:sys.display.pluggable_vsync_prioritized=0
+    setprop vendor.display.pluggable_vsync_prioritized 0
+
+on boot && property:ro.product.is_production=false
+    # Start mmi_watchdog for stability
+    start vendor.mmi_watchdogd
+
+on property:sys.boot_completed=1 && property:ro.vendor.build.motfactory=1
+    wait /sys/class/drm/card0-DSI-1/panelPcdCheck
+    chmod 0666 /sys/class/drm/card0-DSI-1/panelPcdCheck
+
+# load moto kern prot, must be after the wifi driver maps DMA!
+on property:sys.boot_completed=1 && property:ro.boot.moto_kern_prot=true
+    insmod /vendor/lib/modules/moto_kern_prot.ko mem_ready=1
+
+on property:sys.boot_completed=1 && property:ro.product.is_production=false
+    insmod /vendor/lib/modules/moto_pm_vh.ko
+    setprop vendor.moto_pm_vh_installed true
+    write /sys/power/pm_freeze_timeout 5000
+    #set game quick touch log on
+    setprop debug.vendor.perf.smart_touch.trace 1
+
+on property:sys.boot_completed=1 && property:ro.boot.enable_moto_pm_vh=1 && property:ro.product.is_production=true
+    insmod /vendor/lib/modules/moto_pm_vh.ko
+    setprop vendor.moto_pm_vh_installed true
+
+on property:vendor.moto_pm_vh_installed=true && property:ro.boot.freeze_panic_mode=panic
+    write /proc/driver/moto_pm_vh "panic"
+
+on property:vendor.moto_pm_vh_installed=true && property:ro.boot.freeze_timeout=*
+    write /sys/power/pm_freeze_timeout ${ro.boot.freeze_timeout}
+
+on init && property:ro.bootmode=mot-factory
+    write /sys/bus/platform/devices/c42d000.qcom,spmi:qcom,pmih010x@7:eusb2-repeater@fd00/user_param_override "0x0d,0x51,0x06,0x53,0x03,0x54"
+
+on property:sys.boot_completed=1 && property:ro.boot.ftrace_on=1 && property:ro.boot.ftrace_buf_size=*
+    write /sys/kernel/tracing/tracing_on 0
+    write /sys/kernel/tracing/set_event ""
+    write /sys/kernel/tracing/trace ""
+    write /sys/kernel/tracing/buffer_size_kb ${ro.boot.ftrace_buf_size}
+    write /sys/kernel/tracing/events/rwmmio/enable 1
+
+    # sched
+    write /sys/kernel/tracing/events/sched/sched_switch/enable 1
+    write /sys/kernel/tracing/events/sched/sched_enq_deq_task/enable 1
+    write /sys/kernel/tracing/events/sched/sched_migrate_task/enable 1
+    write /sys/kernel/tracing/events/sched/sched_wakeup/enable 1
+    write /sys/kernel/tracing/events/sched/sched_wakeup_new/enable 1
+
+    # irq
+    write /sys/kernel/tracing/events/irq/enable 1
+    # timer
+    write /sys/kernel/tracing/events/timer/enable 1
+    # hot-plug
+    write /sys/kernel/tracing/tracing_on 1
+

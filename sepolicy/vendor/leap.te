@@ -1,0 +1,94 @@
+# D38 — denial-driven additions on top of the harvested stock policy (sepolicy/vendor-moto/)
+
+# The camera HAL enumerates every system property at start (map/open/getattr on all of
+# /dev/__properties__). Stock policy does not allow it either (audit=0 hid it); quiet, don't grant.
+dontaudit hal_camera_default property_type:file { getattr map open read };
+
+# batt_health walks /mnt/vendor/persist to reach persist_batt_file (stock: same denial, silenced).
+allow batt_health vendor_persist_file:dir search;
+
+# ---- D46: denial round 4 (stock-named policy, permissive). Everything below is also denied on stock
+# (audit=0 hides it there) unless noted; we allow what is functional and quiet the rest to reach enforcing
+# with stock-equivalent behaviour. Source: tools/d43_denials.txt via tools/denials2te.py.
+allow vendor_hal_fingerprint_fpc build_bootimage_prop:file { getattr map open read };
+allow vendor_hal_fingerprint_fpc fps_data_file:dir { getattr search };
+allow vendor_hal_fingerprint_fpc fps_data_file:file { open write };
+allow vendor_hal_fingerprint_fpc uhid_device:chr_file { ioctl open write };
+allow vendor_hal_fingerprint_fpc vendor_sysfs_devicetree_soc:dir search;
+allow vendor_hal_fingerprint_fpc vendor_sysfs_spss:dir search;
+allow vendor_hal_fingerprint_fpc vendor_sysfs_spss:file { open read };
+set_prop(vendor_hal_fingerprint_fpc, vendor_mot_hw_prop)
+allow vendor_init debugfs_bootreceiver_tracing:file write;
+allow vendor_init debugfs_tracing_debug:dir { add_name write };
+allow vendor_init debugfs_tracing_debug:file { create write };
+allow vendor_init vendor_qms_prop:property_service set;
+allow hal_camera_default mnt_vendor_file:dir search;
+allow hal_camera_default vendor_persist_file:dir search;
+binder_call(hal_camera_default, vendor_hal_qspmhal_default)
+allow init_capsensor self:capability fsetid;
+allow init_capsensor sysfs_input:dir search;
+allow init_capsensor sysfs_input:file { getattr setattr };
+allow init_capsensor vendor_sysfs_sensors:dir search;
+allow installd { bt_firmware_file firmware_file fsg_file }:filesystem quotaget;
+binder_call(servicemanager, { hal_graphics_composer_default mediacodec vendor_hal_poweroptservice_qti })
+allow hal_lineage_livedisplay_qti hal_moto_panel_aidl_service:service_manager find;
+binder_call(hal_lineage_livedisplay_qti, hal_moto_panel_default)
+allow { hal_sensorext_default init_uwb mot_flip_count qclicense_copy } mnt_vendor_file:dir search;
+allow { hal_sensorext_default init_uwb mot_flip_count qclicense_copy hal_audio_default hal_graphics_composer_default hal_sensors_default mmi_boot tee vendor_sec_nvm vendor_sensors vendor_vppservice } vendor_persist_file:dir search;
+allow hal_uwb_default sysfs_spi_devices:dir search;
+allow hal_uwb_default sysfs_spi_devices:lnk_file read;
+allow init_usb sysfs_udc:dir search;
+allow hal_mot_vendor_usbcare sysfs_udc:dir search;
+allow kernel debugfs_ipc:dir search;
+allow kernel self:capability net_bind_service;
+allow kernel block_device:dir search;
+allow stflashtool vendor_persist_nfc_prop:file { getattr map open read };
+binder_call({ bootanim surfaceflinger }, vendor_hal_qspmhal_default)
+allow hal_moto_panel_default vndbinder_device:chr_file { ioctl map open read write };
+allow hardware_rev kmsg_device:chr_file { open write };
+allow vendor_modprobe self:key write;
+allow { vendor_nicmd vendor_per_mgr vendor_spdaemon } debugfs_ipc:dir search;
+allow init debugfs_bootreceiver_tracing:dir { add_name write };
+allow init debugfs_wakeup_sources:file getattr;
+allow init { debugfs_ipc debugfs_sensors }:dir relabelto;
+allow init debugfs_ipc:file relabelto;
+
+# (neverallow-blocked, left denied as on stock: camera->qspm service find, init_hw build_vendor_prop, init_usb system_prop,
+#  stflashtool nfc_prop, vendor_init bluetooth_prop, vendor_qms_* data file, vendor_qms dac_read_search)
+# Quiet the stock-identical noise: reads of unlabelled properties (stock labels none of these either),
+# generic sysfs/proc/debugfs nodes stock does not label, and a factory tool (diagcommd) no policy labels.
+dontaudit { batt_health hal_biometric_face hal_nfc_default stflashtool vendor_init vendor_qti_init_shell vendor_hal_fingerprint_fpc } default_prop:file { getattr map open read };
+dontaudit hal_audio_default debugfs:dir { open read };
+dontaudit hal_mottouch_default vendor_data_file:file { open write };
+dontaudit hal_uwb_default sysfs:{ dir file } { open read };
+dontaudit init debugfs:{ dir file } { getattr relabelfrom };
+dontaudit init sysfs:file { open write };
+dontaudit init vendor_file:file { execute execute_no_trans };
+dontaudit init same_process_hal_file:file execute;
+dontaudit init_touch proc:file { getattr setattr };
+dontaudit init_wls sysfs:file { getattr setattr };
+dontaudit vendor_cacertservice_app system_data_file:file open;
+dontaudit vendor_hal_fingerprint_fpc init:unix_stream_socket connectto;
+dontaudit vendor_hal_fingerprint_fpc property_socket:sock_file write;
+
+# ---- D50: round 5 — first ENFORCING boot (2026-09-23, D38-level vendor policy on the phone). Everything the enforcing
+# boot denied was already in the D46 block above except the following. Source: tools/d46_denials.txt (1749 lines,
+# 58 distinct) via tools/denials2te.py. The wakeup-source and fpc sysfs nodes are LABELED (genfs_contexts) instead.
+allow tee vendor_persist_file:dir { read search };          # qseecomd lists /mnt/vendor/persist (search alone was not enough)
+allow vendor_hal_fingerprint_fpc sysfs_fpc:dir r_dir_perms; # hw_reset lives under the platform device, now sysfs_fpc
+allow vendor_hal_fingerprint_fpc sysfs_fpc:file rw_file_perms;
+# neverallow-blocked on stock as well (dac_override / vendor data files / user mounts) — quiet, do not grant
+dontaudit vendor_qms self:capability { dac_override dac_read_search };
+dontaudit { vendor_qms_0 vendor_qms_1 vendor_qms_2 } vendor_qms_main_data_file:dir search;
+userdebug_or_eng(`dontaudit vendor_subsystem_ramdump mnt_user_file:dir search;')  # domain is userdebug-only on stock
+dontaudit tee tmpfs:dir read;                               # qseecomd readdir on the tmpfs root
+
+# ---- D51: round 6 — after the D50 vendor (enforcing, 2026-09-25): 25 denial lines / 8 distinct. All but three are the
+# neverallow-blocked set listed above (left denied, as on stock). Source: tools/d50_denials.txt.
+allow vendor_hal_fingerprint_fpc fps_data_file:dir { write add_name create remove_name };  # HAL creates /data/vendor/.fps/<templates>
+allow vendor_hal_fingerprint_fpc fps_data_file:file { create getattr read unlink };
+allow vendor_modprobe self:capability sys_nice;                                            # modprobe -f priority at boot
+# vendor_init read of init.svc.poweropt-service (init_service_status_private_prop) is plat-PRIVATE: the type is not visible
+# to vendor policy, so it cannot even be dontaudited here. Left as a 2-line boot denial (stock: same).
+# D52 (next build): sys_nice unlocked the follow-on step — modprobe renices a kernel thread at boot.
+allow vendor_modprobe kernel:process setsched;

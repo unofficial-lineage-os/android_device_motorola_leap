@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Physical rounded-corner radius of the inner panel (stock) -->
+    <dimen name="real_rounded_corner_radius">120px</dimen>
+    <dimen name="rounded_corner_radius">120px</dimen>
+    <dimen name="rounded_corner_radius_top">120px</dimen>
+    <dimen name="rounded_corner_radius_bottom">120px</dimen>
+    <bool name="config_enableDisplayCutoutProtection">true</bool>
+    <bool name="doze_display_state_supported">true</bool>
+    <bool name="doze_suspend_display_state_supported">true</bool>
+</resources>

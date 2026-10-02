@@ -1,0 +1,30 @@
+/vendor/bin/hw/vndservicemanager-stock    u:object_r:vndservicemanager_exec:s0
+/(vendor|system/vendor)/bin/hw/vendor\.lineage\.livedisplay-service\.leap    u:object_r:hal_lineage_livedisplay_qti_exec:s0
+
+
+# D38: our renamed vendor-private copies of libs stock labels same_process_hal_file (loaded by coredomain via sphal)
+/(vendor|system/vendor)/lib(64)?/libRSCpuRef-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libRSDriver-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libRS_internal-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libbase-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libbcinfo-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libblas-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libcompiler_rt-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libcutils-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libdmabufheap-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libdrm-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libgralloctypes-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libhardware-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libhidlbase-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libhidlmemory-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libhidltransport-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libhwbinder-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libion-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libjsoncpp-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/liblzma-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libpng-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libprocessgroup-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libqti_vndfwk_detect-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libunwindstack-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libutils-vendor\.so    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libutilscallstack-vendor\.so    u:object_r:same_process_hal_file:s0

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- leap: expose the ultrawide/telephoto cameras in Aperture (zeekr DeviceAperture overlay) -->
+<resources>
+    <bool name="config_enableAuxCameras">true</bool>
+</resources>

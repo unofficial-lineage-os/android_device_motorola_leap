@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- leap: cover panel only (480dp wide; the inner panel is 408dp). Keep the lock screen's hint text and lock
+     icon above the camera block (arcfox ac8f984, same 1080x1272 panel and 349 px camera block). -->
+<resources>
+    <dimen name="keyguard_indication_margin_bottom">143dp</dimen>
+    <dimen name="lock_icon_margin_bottom">179dp</dimen>
+</resources>

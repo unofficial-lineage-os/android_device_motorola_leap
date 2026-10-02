@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<displayConfiguration>
+    <name>Outer Display</name>
+    <quirks>
+        <quirk>canSetBrightnessViaHwc</quirk>
+    </quirks>
+    <autoBrightness enabled="true">
+    </autoBrightness>
+    <densityMapping>
+        <density>
+            <width>1080</width>
+            <height>1272</height>
+            <density>360</density>
+        </density>
+    </densityMapping>
+</displayConfiguration>

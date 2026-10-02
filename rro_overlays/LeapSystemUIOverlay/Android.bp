@@ -1,0 +1,5 @@
+// leap D22: SystemUI values from stock SystemUI__leap_g__auto_generated_rro_product.apk
+runtime_resource_overlay {
+    name: "LeapSystemUIOverlay",
+    vendor: true,
+}

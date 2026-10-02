@@ -1,0 +1,5 @@
+connectivity_native_service vendor_nicmd binder
+connectivity_native_service vendor_qms binder
+hal_sensors_default hal_graphics_composer_service service_manager
+vendor_nicmd connectivity_native_service binder
+vendor_qms connectivity_native_service binder

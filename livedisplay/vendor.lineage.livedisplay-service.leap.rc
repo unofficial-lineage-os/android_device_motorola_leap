@@ -1,0 +1,4 @@
+service vendor.livedisplay-leap /vendor/bin/hw/vendor.lineage.livedisplay-service.leap
+    class hal
+    user system
+    group system

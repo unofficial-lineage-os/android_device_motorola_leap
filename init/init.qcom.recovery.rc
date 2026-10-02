@@ -1,0 +1,20 @@
+# Recovery init for leap — adapted from device/oneplus/sm8750-common/init/init.qcom.recovery.rc
+# (same SoC: SM8750/sun). Two jobs:
+#   1. bring up the USB gadget so adb/sideload works in recovery
+#   2. create the /dev/block/bootdevice symlink that the legacy paths in fstab.default rely on
+#      (verified on device: ro.boot.bootdevice=1d84000.ufshc, stock uses /dev/block/bootdevice/...)
+# Dodge's modem->/firmware vfat mount is deliberately NOT carried over: leap's modem partition is
+# ext4 and mounts at /vendor/firmware_mnt, and recovery does not need it.
+
+on init
+    setprop sys.usb.configfs 1
+
+on property:ro.boot.usbcontroller=*
+    setprop sys.usb.controller ${ro.boot.usbcontroller}
+    wait /sys/bus/platform/devices/${ro.boot.usb.dwc3_msm:-a600000.ssusb}/mode
+    write /sys/bus/platform/devices/${ro.boot.usb.dwc3_msm:-a600000.ssusb}/mode peripheral
+    wait /sys/class/udc/${ro.boot.usbcontroller} 1
+
+on fs
+    wait /dev/block/platform/soc/${ro.boot.bootdevice}
+    symlink /dev/block/platform/soc/${ro.boot.bootdevice} /dev/block/bootdevice

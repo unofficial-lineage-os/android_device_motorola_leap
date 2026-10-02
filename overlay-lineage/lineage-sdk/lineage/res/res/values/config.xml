@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- leap D22: lineage-sdk switches (mirrors dodge sm8750-common where hardware matches) -->
+<resources>
+    <bool name="config_proximityCheckOnWake">true</bool>
+    <bool name="config_proximityCheckOnWakeEnabledByDefault">true</bool>
+    <bool name="config_haveHigherAspectRatioScreen">true</bool>
+    <!-- Flip phone: listening for fingerprints with the screen off (side button) is fine -->
+    <bool name="config_fingerprintWakeAndUnlock">true</bool>
+    <string-array name="config_restartActionsList">
+        <item>restart</item>
+        <item>restart_recovery</item>
+        <item>restart_bootloader</item>
+        <item>restart_fastboot</item>
+    </string-array>
+</resources>

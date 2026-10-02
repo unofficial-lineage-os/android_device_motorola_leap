@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+
+     leap-specific vendor HALs that are declared in the device manifest but are not in
+     AOSP's framework matrix, hardware/motorola/vintf, or qcom-caf's vendor matrix.
+     All optional: the framework does not require them, it just must tolerate them.
+-->
+<compatibility-matrix version="9.0" type="framework">
+    <hal format="aidl" optional="true">
+        <name>com.motorola.hardware.biometric.fingerprint</name>
+        <version>3</version>
+        <interface>
+            <name>IMotoFpsNavigate</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>com.motorola.hardware.display.panel</name>
+        <version>2</version>
+        <interface>
+            <name>IDisplayPanel</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>com.motorola.hardware.display.touch</name>
+        <version>3</version>
+        <interface>
+            <name>IMotTouch</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>com.motorola.hardware.ifaa</name>
+        <version>1</version>
+        <interface>
+            <name>IIFAADevice</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>motorola.hardware.fdr</name>
+        <version>1</version>
+        <interface>
+            <name>IFdrControl</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>motorola.hardware.health</name>
+        <version>1</version>
+        <interface>
+            <name>IMotoHealth</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>motorola.hardware.health.storage</name>
+        <version>1</version>
+        <interface>
+            <name>IMotStorage</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>motorola.hardware.lpsensing</name>
+        <version>1</version>
+        <interface>
+            <name>ILpSensing</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>motorola.hardware.sxf</name>
+        <version>2</version>
+        <interface>
+            <name>IMotoSxf</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>motorola.hardware.wireless.powershare</name>
+        <version>2</version>
+        <interface>
+            <name>IMotPowerShare</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>motorola.hardware.wireless.wlc</name>
+        <version>1</version>
+        <interface>
+            <name>IMotWlc</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.arcsoft.hardware.camera.postproc</name>
+        <version>2</version>
+        <interface>
+            <name>IPostProcService</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.dolby.dms</name>
+        <version>1</version>
+        <interface>
+            <name>IDms</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.dolby.dvs</name>
+        <version>1</version>
+        <interface>
+            <name>IDvs</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.zuialarm.hardware.alarm</name>
+        <version>1</version>
+        <interface>
+            <name>IAlarm</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+</compatibility-matrix>

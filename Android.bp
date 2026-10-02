@@ -1,0 +1,31 @@
+//
+// SPDX-FileCopyrightText: The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+
+soong_namespace {
+}
+
+// D20: stock ships /vendor/firmware/wlan/qca_cld/peach_v2/ as three SYMLINKS (extract-utils does not
+// carry symlinks). Without them the qca_cld3_peach_v2 driver refuses to load:
+// "android.hardware.wifi-service: Failed to load WiFi driver / write driver state control param: Invalid argument".
+install_symlink {
+    name: "leap_wlan_symlink_qcom_cfg",
+    vendor: true,
+    installed_location: "firmware/wlan/qca_cld/peach_v2/WCNSS_qcom_cfg.ini",
+    symlink_target: "/vendor/etc/wifi/peach_v2/WCNSS_qcom_cfg.ini",
+}
+
+install_symlink {
+    name: "leap_wlan_symlink_prc_cfg",
+    vendor: true,
+    installed_location: "firmware/wlan/qca_cld/peach_v2/WCNSS_prc_cfg.ini",
+    symlink_target: "/vendor/etc/wifi/peach_v2/WCNSS_prc_cfg.ini",
+}
+
+install_symlink {
+    name: "leap_wlan_symlink_mac",
+    vendor: true,
+    installed_location: "firmware/wlan/qca_cld/peach_v2/wlan_mac.bin",
+    symlink_target: "/mnt/vendor/persist/peach_v2/wlan_mac.bin",
+}

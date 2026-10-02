@@ -1,0 +1,7 @@
+# leap D32: double-tap-to-wake is firmware-backed on Motorola's touchscreen_mmi framework (arcfox docs/DT2W.md):
+# writing 49 to the gesture node arms the double-tap gesture in the IC when the panel is off; the IC
+# raises BTN_TRIGGER_HAPPY6 -> KEYCODE_WAKEUP via the stock double-tap / s-double-tap keylayouts.
+# Stock's init.mmi.overlay.rc already chowns both nodes to system 0660.
+on property:sys.boot_completed=1
+    write /sys/class/touchscreen/primary/gesture 49
+    write /sys/class/touchscreen/secondary/gesture 49

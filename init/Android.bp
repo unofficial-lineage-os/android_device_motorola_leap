@@ -1,0 +1,188 @@
+//
+// SPDX-FileCopyrightText: The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+
+// first-stage mount needs this inside vendor_ramdisk; the running system needs the vendor copy
+prebuilt_etc {
+    name: "fstab.default",
+    src: "fstab.default",
+    vendor: true,
+    vendor_ramdisk_available: true,
+}
+
+// recovery-only: USB gadget bring-up + /dev/block/bootdevice symlink
+prebuilt_etc {
+    name: "init.qcom.recovery.rc",
+    src: "init.qcom.recovery.rc",
+    sub_dir: "init",
+    recovery: true,
+}
+
+// Vendor hardware init scripts (findings.md D13).
+// init.rc does `import /vendor/etc/init/hw/init.${ro.hardware}.rc` (ro.hardware=qcom),
+// so without init.qcom.rc NOTHING vendor-side starts: no USB gadget (init.mmi.usb.rc),
+// no display, no HAL services. These are stock leap A15 scripts, taken verbatim from
+// firmware/dump/vendor/etc/init/hw/. [D refs/sm8750-common/init/Android.bp:31,45]
+
+prebuilt_etc {
+    name: "init.mmi.charge_only.rc",
+    src: "hw/init.mmi.charge_only.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.mmi.chipset.rc",
+    src: "hw/init.mmi.chipset.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.mmi.debug.rc",
+    src: "hw/init.mmi.debug.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.mmi.diag.rc",
+    src: "hw/init.mmi.diag.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.mmi.diag_mdlog.rc",
+    src: "hw/init.mmi.diag_mdlog.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.mmi.graphics.rc",
+    src: "hw/init.mmi.graphics.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.mmi.overlay.rc",
+    src: "hw/init.mmi.overlay.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.mmi.rc",
+    src: "hw/init.mmi.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.mmi.tcmd.rc",
+    src: "hw/init.mmi.tcmd.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.mmi.usb.rc",
+    src: "hw/init.mmi.usb.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.mmi.wlan.rc",
+    src: "hw/init.mmi.wlan.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.qcom.factory.rc",
+    src: "hw/init.qcom.factory.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.qcom.rc",
+    src: "hw/init.qcom.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.qti.kernel.rc",
+    src: "hw/init.qti.kernel.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.qti.kernel.target.rc",
+    src: "hw/init.qti.kernel.target.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.qti.ufs.rc",
+    src: "hw/init.qti.ufs.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.target.rc",
+    src: "hw/init.target.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.vendor.st21nfc.rc",
+    src: "hw/init.vendor.st21nfc.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+// BRING-UP ONLY: early adb on normal boots (findings.md D15s). See the rc header.
+prebuilt_etc {
+    name: "init.leap.bringup.rc",
+    src: "init.leap.bringup.rc",
+    sub_dir: "init",
+    vendor: true,
+}
+
+// BRING-UP ONLY: boot logger to the logks partition (findings.md D15t).
+sh_binary {
+    name: "bringup_log.sh",
+    src: "bringup_log.sh",
+    vendor: true,
+}
+
+// D15x: mount points that stock's vendor has as empty dirs (dodge's common tree only defines
+// firmware_mnt/dsp/bt_firmware in the root namespace; fsg + Moto's super_* live elsewhere).
+mkdir {
+    name: "vendor_fsg_mountpoint_leap",
+    dir: "fsg",
+    vendor: true,
+}
+
+mkdir {
+    name: "vendor_super_modem_mountpoint_leap",
+    dir: "super_modem",
+    vendor: true,
+}
+
+mkdir {
+    name: "vendor_super_fsg_mountpoint_leap",
+    dir: "super_fsg",
+    vendor: true,
+}
+

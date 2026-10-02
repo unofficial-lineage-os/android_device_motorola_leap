@@ -1,0 +1,2 @@
+# umbrella HAL attribute (includes platform virtual/test domains) -> the concrete vendor HAL domain
+hal_fingerprint hal_fingerprint_default
