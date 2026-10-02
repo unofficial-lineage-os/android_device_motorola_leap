@@ -14,8 +14,8 @@ TARGET_KERNEL_CONFIG_EXT := $(DEVICE_PATH)/kernel/leap-los.config
 BOARD_KERNEL_IMAGE_NAME := Image
 BOARD_USES_GENERIC_KERNEL_IMAGE := true
 
-# CONFIG_DRM_DYNAMIC_REFRESH_RATE=n: the kernel config enables it, but the touch drivers then need dsi_freq_head from
-# Motorola's unpublished msm_drm (D44-e); touch sampling does not follow the panel refresh rate on the source kernel.
+# CONFIG_DRM_DYNAMIC_REFRESH_RATE=y (D60): our msm_drm exports dsi_freq_head, so the touch drivers follow the panel
+# refresh rate. It is a module-build variable only; kernel/leap-los.config keeps it unset in the kernel image.
 # clang 21 vs a 6.6.82 tree with CONFIG_WERROR=y; Motorola's kbuild needs the OEM DTB switch, the SoC switch,
 # the profile-derived WLAN configs bazel would resolve, and the stub include root for moto-kernel-modules.
 # NOTE: no comments inside the continued assignment — a "#" swallows the trailing backslash and silently drops the
@@ -25,7 +25,7 @@ TARGET_KERNEL_ADDITIONAL_FLAGS := \
     KCFLAGS="-Wno-unknown-warning-option -Wno-default-const-init-unsafe -Wno-error=missing-prototypes -Wno-missing-prototypes -Wno-error=format -Wno-error=enum-compare -Wno-error=enum-compare-conditional -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wno-error=unused-function" \
     CONFIG_MMI_DEVICE_DTBS=y TARGET_BOARD_PLATFORM=sun CONFIG_ARCH_SUN=y \
     CONFIG_WLAN_TELEMETRY=n CONFIG_WLAN_TX_MON_2_0=y QCA_WIFI_FTM_NL80211=y \
-    CONFIG_DRM_PANEL_EVENT_NOTIFICATIONS=y CONFIG_DRM_DYNAMIC_REFRESH_RATE=n CONFIG_BOARD_USES_DOUBLE_TAP_CTRL=y CONFIG_INPUT_TOUCHSCREEN_MMI=y CONFIG_TOUCHSCREEN_GOODIX_BRL_SPI=y CONFIG_BUILD_FOR_ANDROID_V=y GKI_OBJ_MODULE_DIR=
+    CONFIG_DRM_PANEL_EVENT_NOTIFICATIONS=y CONFIG_DRM_DYNAMIC_REFRESH_RATE=y CONFIG_BOARD_USES_DOUBLE_TAP_CTRL=y CONFIG_INPUT_TOUCHSCREEN_MMI=y CONFIG_TOUCHSCREEN_GOODIX_BRL_SPI=y CONFIG_BUILD_FOR_ANDROID_V=y GKI_OBJ_MODULE_DIR=
 
 TARGET_KERNEL_EXT_MODULE_ROOT := kernel/motorola/sm8750-modules
 # Motorola entries are dependency-ordered (sensors/mmi_relay/mmi_info/bm_adsp_ulog first: hall, glink charger, touch need their Module.symvers)
