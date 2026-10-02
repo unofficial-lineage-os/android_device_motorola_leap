@@ -78,7 +78,6 @@ soc-topology-test
 soc-utils-test
 time_test
 tipc
-tls
 usbmon
 usbnet
 usbserial
