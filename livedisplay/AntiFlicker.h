@@ -18,8 +18,6 @@ class AntiFlicker : public BnAntiFlicker {
     ndk::ScopedAStatus setEnabled(bool enabled) override;
 
   private:
-    bool setDcMode(bool on);
-
     std::mutex mLock;
     bool mEnabled = false;
 };
