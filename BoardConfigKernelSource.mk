@@ -112,4 +112,4 @@ TARGET_MERGE_DTBS_WILDCARD := sun-tp*-leap-base
 
 # D53: build the kernel with the toolchain Moto's tree pins (build.config.constants: CLANG_VERSION=r510928, clang 18 —
 # the same compiler the shipped GKI 6.6.118 reports). Our clang-21 build of 6.6.82 started and panicked in first stage.
-TARGET_KERNEL_CLANG_PATH := /home/kali/Desktop/RAZRULTRA2025LINEAGEROM/refs/clang/clang-r510928
+TARGET_KERNEL_CLANG_PATH := $(abspath kernel/platform/kernel-$(TARGET_KERNEL_VERSION)/prebuilts/clang/host/linux-x86/clang-r510928)
