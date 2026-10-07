@@ -79,21 +79,8 @@ BOARD_BOOTCONFIG := \
     androidboot.memcg=1 \
     androidboot.serialconsole=0 \
     androidboot.usbcontroller=a600000.dwc3 \
-    androidboot.vendor.qspa=true \
-    androidboot.init_fatal_panic=true
-# ^^^ androidboot.init_fatal_panic=true is TEMPORARY DEBUG (remove before any release).
-# system/core/init/reboot_utils.cpp:50-57 reads it from bootconfig OR cmdline. Default behaviour
-# on a first-stage fatal error is a CLEAN reboot to the bootloader, which leaves no crash record
-# (this is why pstore and kpan were empty every time). With this set init calls panic() instead,
-# so ramoops captures init's actual error message. ramoops is confirmed working on this device:
-#   OF: reserved mem: 0xae000000..0xae05ffff (384 KiB) ramoops_region
-#   pstore: Registered ramoops as persistent store backend
-# BRING-UP ONLY: run SELinux permissive so a missing/incomplete sepolicy domain cannot stop a
-# vendor service from starting or a HAL from registering (every failure so far was silent;
-# permissive turns the whole class into logcat 'avc: denied' lines instead of hangs).
-# Honoured on userdebug: system/core/init/selinux.cpp:104 reads androidboot.selinux from the
-# kernel cmdline, gated by ALLOW_PERMISSIVE_SELINUX=1 (init/Android.bp:147, debuggable).
-# REMOVE before any release build.
+    androidboot.vendor.qspa=true
+
 BOARD_KERNEL_CMDLINE := \
     video=vfb:640x400,bpp=32,memsize=3072000 \
     console=ttynull \

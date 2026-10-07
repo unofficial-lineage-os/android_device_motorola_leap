@@ -143,12 +143,6 @@ PRODUCT_ENFORCE_RRO_TARGETS := *
 #     BuildDesc="leap_g-user 15 V2VL35.42-148-2-5-1 2203fb-37b70 release-keys" \
 #     BuildFingerprint=motorola/leap_g/leap:15/V2VL35.42-148-2-5-1/2203fb-37b70:user/release-keys
 
-# DEV ONLY: embed this build host's adb public key so `adb shell` works in recovery without
-# an on-screen auth prompt (recovery sets ro.adb.secure=1 and ships an empty adb_keys, which is
-# why adb reported "unauthorized"). Needed to read /tmp/recovery.log while bringing the device up.
-# REMOVE before any public release — it grants this host root adb on the device.
-PRODUCT_ADB_KEYS := $(DEVICE_PATH)/adb_keys
-
 # ============================================================================================
 # BOOT-CRITICAL HALs (findings.md D14)
 # ============================================================================================
@@ -265,9 +259,7 @@ PRODUCT_SOONG_NAMESPACES += $(DEVICE_PATH)
 PRODUCT_PACKAGES += \
     fstab.default \
     fstab.default.vendor_ramdisk \
-    init.qcom.recovery.rc \
-    init.leap.bringup.rc \
-    bringup_log.sh
+    init.qcom.recovery.rc
 
 # Vendor hardware init scripts — see findings.md D13. vendor/etc/init/hw/ was EMPTY:
 # init.rc imports /vendor/etc/init/hw/init.${ro.hardware}.rc and none of these were ever

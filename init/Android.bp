@@ -151,21 +151,6 @@ prebuilt_etc {
     vendor: true,
 }
 
-// BRING-UP ONLY: early adb on normal boots (findings.md D15s). See the rc header.
-prebuilt_etc {
-    name: "init.leap.bringup.rc",
-    src: "init.leap.bringup.rc",
-    sub_dir: "init",
-    vendor: true,
-}
-
-// BRING-UP ONLY: boot logger to the logks partition (findings.md D15t).
-sh_binary {
-    name: "bringup_log.sh",
-    src: "bringup_log.sh",
-    vendor: true,
-}
-
 // D15x: mount points that stock's vendor has as empty dirs (dodge's common tree only defines
 // firmware_mnt/dsp/bt_firmware in the root namespace; fsg + Moto's super_* live elsewhere).
 mkdir {
