@@ -340,12 +340,13 @@ PRODUCT_COPY_FILES += \
 # (basename == a source module: Bluetooth's hfp/le_audio configs, media video_system_specs.json,
 # dolby_vision.cfg). Full inventory: findings.md D19-f. WFD/StrongBox/charger-res left out on purpose.
 PRODUCT_COPY_FILES += \
-    $(DEVICE_PATH)/configs/bt_audio/hfp/hfp_codec_capabilities.xml:$(TARGET_COPY_OUT_VENDOR)/etc/aidl/hfp/hfp_codec_capabilities.xml \
-    $(DEVICE_PATH)/configs/bt_audio/le_audio/aidl_audio_set_configurations.bfbs:$(TARGET_COPY_OUT_VENDOR)/etc/aidl/le_audio/aidl_audio_set_configurations.bfbs \
-    $(DEVICE_PATH)/configs/bt_audio/le_audio/aidl_audio_set_scenarios.bfbs:$(TARGET_COPY_OUT_VENDOR)/etc/aidl/le_audio/aidl_audio_set_scenarios.bfbs \
     $(DEVICE_PATH)/configs/media/media_sun/video_system_specs.json:$(TARGET_COPY_OUT_VENDOR)/etc/media_sun/video_system_specs.json \
     $(DEVICE_PATH)/configs/media/media_tuna_v0/video_system_specs.json:$(TARGET_COPY_OUT_VENDOR)/etc/media_tuna_v0/video_system_specs.json \
     $(DEVICE_PATH)/configs/misc/dolby_vision.cfg:$(TARGET_COPY_OUT_VENDOR)/etc/dolby_vision.cfg
+
+PRODUCT_PACKAGES += \
+    aidl_audio_set_scenarios_bfbs \
+    hfp_codec_capabilities_xml
 
 # D19-g: audio effects. (1) audio_effects_config.xml now comes from the device tree with the Dolby
 # spatializer entries removed — the A15 libswspatializeraidl.so crashed the audio HAL on every
@@ -358,6 +359,13 @@ PRODUCT_COPY_FILES += \
 # D19-i: declare the Moto telephony/IMS extension jars (see configs/permissions/moto-telephony-libs.xml)
 PRODUCT_COPY_FILES += \
     $(DEVICE_PATH)/configs/permissions/moto-telephony-libs.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/moto-telephony-libs.xml
+
+PRODUCT_PACKAGES += \
+    ims_ext_common.xml \
+    qti_telephony_hidl_wrapper.xml \
+    qti_telephony_hidl_wrapper_prd.xml \
+    qti_telephony_utils.xml \
+    qti_telephony_utils_prd.xml
 
 PRODUCT_PACKAGES += \
     libbundleaidl \

@@ -229,9 +229,6 @@ DEVICE_MANIFEST_SKUS := sun
 DEVICE_MANIFEST_SUN_FILES := $(DEVICE_PATH)/manifests/manifest_sun.xml
 
 
-# TEMPORARY (D16-c): enumerate every duplicate install rule in one kati pass; remove once fixed.
-BUILD_BROKEN_DUP_RULES := true
-
 # D16-c: display namespaces. BoardConfigQcom.mk exports vendor/qcom/opensource/{commonsys-intf/,}display
 # to make; leap's display stack is 100% stock blobs (A15) and the A16-generated display AIDL libs are
 # ABI-incompatible with them (findings.md D16-c: PAC/autiasp SIGILL in libsdmclient). Hiding the source

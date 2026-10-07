@@ -433,6 +433,7 @@ vendor/etc/acdbdata/nn_vad_models/fai__3.0.0_0.0__eai_4.2_enpuv5.pmd
 vendor/etc/acdbdata/nn_vad_models/fai__3.0.0_0.0__eai_4.6_enpuv5.pmd
 vendor/etc/acdbdata/sun_qrd/QRD_acdb_cal.acdb
 vendor/etc/acdbdata/sun_qrd/QRD_workspaceFileXml.qwsp
+vendor/etc/aidl/le_audio/aidl_audio_set_configurations.bfbs:vendor/etc/aidl/le_audio/moto_audio_set_configurations.bfbs
 vendor/etc/aidl/le_audio/aidl_audio_set_configurations.json
 vendor/etc/aidl/le_audio/aidl_audio_set_scenarios.json
 vendor/etc/ap_gain.bin
@@ -3080,15 +3081,10 @@ system_ext/framework/qti-telephony-common.jar
 system_ext/framework/qcrilhook.jar
 system_ext/framework/qcom-moto-telephony-ext.jar
 system_ext/framework/qcom-moto-ims-ext.jar
-system_ext/etc/permissions/qti_telephony_utils.xml
-system_ext/etc/permissions/qti_telephony_hidl_wrapper.xml
 system_ext/etc/permissions/qcrilhook.xml
 product/framework/ims-ext-common.jar
 product/framework/qti-telephony-utils-prd.jar
 product/framework/qti-telephony-hidl-wrapper-prd.jar
-product/etc/permissions/ims_ext_common.xml
-product/etc/permissions/qti_telephony_utils_prd.xml
-product/etc/permissions/qti_telephony_hidl_wrapper_prd.xml
 product/etc/permissions/telephony_product_privapp-permissions-qti.xml
 # D21: FPC fingerprint HAL (dropped in D15d for a source-side "multiple versions of biometrics.common";
 # under DISABLE_DEPS there is no dep analysis). Its V3 interface libs come from device.mk (.vendor).
