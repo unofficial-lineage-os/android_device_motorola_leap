@@ -1,4 +1,4 @@
-<!-- leap D27: stock A16 table + arcfox's TRIGGER_SLEEP on the closed states (0,1) and TRIGGER_WAKE on the
+<!-- stock A16 table + arcfox's TRIGGER_SLEEP on the closed states (0,1) and TRIGGER_WAKE on the
      open states (4,5,6), so the property-based path agrees with config_deviceStatesOnWhichToSleep/WakeUp. -->
 <device-state-config>
   <device-state>

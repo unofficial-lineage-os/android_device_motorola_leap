@@ -3,10 +3,6 @@
 # SPDX-FileCopyrightText: The LineageOS Project
 # SPDX-License-Identifier: Apache-2.0
 #
-# SKELETON — idiom mirrored from device/motorola/sm8475-common/extract-files.py.
-# proprietary-files.txt does not exist yet; it is authored during firmware teardown.
-# Factory-package input: extract-utils ships extract_utils/extract_moto_piv.py for
-# Motorola's MOTO_PIV_FULL256 container, so point this at the RETUS factory zip contents.
 
 from extract_utils.fixups_blob import (
     blob_fixup,
@@ -30,19 +26,10 @@ namespace_imports = [
     'vendor/qcom/opensource/commonsys/display',
     'vendor/qcom/opensource/dataservices',
 ]
-# NOTE: commonsys-intf/display added so leap's prebuilt display consumers (ppd,
-# libwfddisplayconfig, ...) resolve the SOURCE-built AIDL interface libs
-# (vendor.qti.hardware.display.{aiqe,color,demura,postproc}-V*-ndk). Those interfaces
-# have ndk enabled in source, so the source builds them and our duplicate prebuilt stubs
-# were removed from proprietary-files.txt to clear the kati "already defined" collision.
-# config/composer3 have NO ndk backend in source (not built), so their prebuilt -ndk stubs
-# are KEPT. agm/pal (audio) resolve via the already-present hardware/qcom-caf/sm8750 import.
-# TODO: confirm the qcom-caf namespace name for sun/sm8750 in the lineage-23.2 manifest
-# (sm8475-common uses hardware/qcom-caf/sm8450 for waipio).
 
 blob_fixups: blob_fixups_user_type = {
-    # D17-c/d: vendor blobs use the vendor's OWN copies of the AOSP libraries (lib*-vendor.so). The AOSP base
-    # installs A16-built copies of these under the real names; the A15 blobs must not see them.
+    # The vendor blobs use stock copies of the AOSP libraries they were built against (lib*-vendor.so),
+    # not the Android 16 builds that the system installs under the real names.
     'vendor/lib64/android.hardware.audio.common-util-vendor.so': blob_fixup().fix_soname().replace_needed('libutils.so', 'libutils-vendor.so').replace_needed('libhidlbase.so', 'libhidlbase-vendor.so'),
     'vendor/lib64/android.hardware.biometrics.common.util-vendor.so': blob_fixup().fix_soname().replace_needed('libbase.so', 'libbase-vendor.so'),
     'vendor/lib64/android.hardware.bluetooth.audio-impl-vendor.so': blob_fixup().fix_soname().replace_needed('libbase.so', 'libbase-vendor.so').replace_needed('libcutils.so', 'libcutils-vendor.so').replace_needed('libfmq.so', 'libfmq-vendor.so').replace_needed('libbluetooth_audio_session_aidl.so', 'libbluetooth_audio_session_aidl-vendor.so'),

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- arcfox: values-sw430dp is a COVER-DISPLAY-ONLY qualifier on this device. The
-     cover panel is 1080x1272 at 360 dpi = 480x565 dp (smallest width 480), the inner
-     panel is 1080x2640 at 420 dpi = 411x1005 dp (smallest width 411 < 430). Measured
-     with `wm density` / `dumpsys display` on 2026-09-13.
+<!-- From the arcfox port (razr 50 ultra), which has the same cover display.
+     values-sw430dp applies to the cover display only: it is 1080x1272 at 360 dpi =
+     480x565 dp (smallest width 480); the inner display is 1224x2992 at 480 dpi =
+     408x997 dp (smallest width 408).
 
      The cover's rear camera block covers x 585..1080, y 923..1272 px. The block is
      NOT declared as a display cutout (see the framework overlay: on AOSP a bottom
@@ -18,22 +18,14 @@
 
      Sizes follow stock's own restriction, not the glass: Motorola's framework keeps
      app windows 297 px (config_cli_display_cutout_camera_height) above the bottom
-     edge, letting content run 52 px into the rounded top of the block (measured
-     from the decompiled W1UXS36H services.jar). Dock icons therefore end at y~947
+     edge, letting content run 52 px into the rounded top of the block. Dock icons therefore end at y~947
      and the keyboard's bottom row at y~961 (block glass starts at y=923).
 
      Landscape: stock cuts a 297 px strip on the camera side for every app. Here
      taskbar_covered_side_inset_landscape makes Launcher3's taskbar provide a second
      navigationBars inset on that side in rotations 90/270, so app bounds, window
      frames and the keyboard lay out around it like a side navigation bar; portrait
-     keeps the whole panel.
-
-     History: the override was briefly blamed for the inner panel staying black
-     after unfolding. That was a separate defect (the device-state table lacked
-     PROPERTY_POWER_CONFIGURATION_TRIGGER_WAKE, so a long fold did not wake on
-     open; see fold/device_state_configuration.xml). Its one real fault, a launcher
-     crash when the override SET changed between panels, is fixed in the Launcher3
-     patch by keeping the entry constant. -->
+     keeps the whole panel. -->
 <resources>
     <dimen name="hotseat_bar_bottom_space_extra">97dp</dimen>
     <dimen name="taskbar_ime_bottom_inset_override">123dp</dimen>

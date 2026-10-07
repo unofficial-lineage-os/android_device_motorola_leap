@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- leap D22: LineageOS Settings switches -->
+<!-- LineageOS Settings switches -->
 <resources>
     <!-- Show Smooth Display / peak refresh rate options (both panels do 24–165 Hz) -->
     <bool name="config_show_smooth_display">true</bool>

@@ -1,4 +1,4 @@
-# D38 — denial-driven additions on top of the harvested stock policy (sepolicy/vendor-moto/)
+# Additions to the stock policy in sepolicy/vendor-moto
 
 # The camera HAL enumerates every system property at start (map/open/getattr on all of
 # /dev/__properties__). Stock policy does not allow it either (audit=0 hid it); quiet, don't grant.
@@ -7,9 +7,7 @@ dontaudit hal_camera_default property_type:file { getattr map open read };
 # batt_health walks /mnt/vendor/persist to reach persist_batt_file (stock: same denial, silenced).
 allow batt_health vendor_persist_file:dir search;
 
-# ---- D46: denial round 4 (stock-named policy, permissive). Everything below is also denied on stock
-# (audit=0 hides it there) unless noted; we allow what is functional and quiet the rest to reach enforcing
-# with stock-equivalent behaviour. Source: tools/d43_denials.txt via tools/denials2te.py.
+# Denials stock has as well, hidden there by dontaudit: allow what is needed, quiet the rest.
 allow vendor_hal_fingerprint_fpc build_bootimage_prop:file { getattr map open read };
 allow vendor_hal_fingerprint_fpc fps_data_file:dir { getattr search };
 allow vendor_hal_fingerprint_fpc fps_data_file:file { open write };
@@ -71,9 +69,7 @@ dontaudit vendor_cacertservice_app system_data_file:file open;
 dontaudit vendor_hal_fingerprint_fpc init:unix_stream_socket connectto;
 dontaudit vendor_hal_fingerprint_fpc property_socket:sock_file write;
 
-# ---- D50: round 5 — first ENFORCING boot (2026-09-23, D38-level vendor policy on the phone). Everything the enforcing
-# boot denied was already in the D46 block above except the following. Source: tools/d46_denials.txt (1749 lines,
-# 58 distinct) via tools/denials2te.py. The wakeup-source and fpc sysfs nodes are LABELED (genfs_contexts) instead.
+# Denials in enforcing mode. The wakeup source and fpc sysfs nodes are labeled in genfs_contexts.
 allow tee vendor_persist_file:dir { read search };          # qseecomd lists /mnt/vendor/persist (search alone was not enough)
 allow vendor_hal_fingerprint_fpc sysfs_fpc:dir r_dir_perms; # hw_reset lives under the platform device, now sysfs_fpc
 allow vendor_hal_fingerprint_fpc sysfs_fpc:file rw_file_perms;
@@ -83,12 +79,8 @@ dontaudit { vendor_qms_0 vendor_qms_1 vendor_qms_2 } vendor_qms_main_data_file:d
 userdebug_or_eng(`dontaudit vendor_subsystem_ramdump mnt_user_file:dir search;')  # domain is userdebug-only on stock
 dontaudit tee tmpfs:dir read;                               # qseecomd readdir on the tmpfs root
 
-# ---- D51: round 6 — after the D50 vendor (enforcing, 2026-09-25): 25 denial lines / 8 distinct. All but three are the
-# neverallow-blocked set listed above (left denied, as on stock). Source: tools/d50_denials.txt.
 allow vendor_hal_fingerprint_fpc fps_data_file:dir { write add_name create remove_name };  # HAL creates /data/vendor/.fps/<templates>
 allow vendor_hal_fingerprint_fpc fps_data_file:file { create getattr read unlink };
 allow vendor_modprobe self:capability sys_nice;                                            # modprobe -f priority at boot
-# vendor_init read of init.svc.poweropt-service (init_service_status_private_prop) is plat-PRIVATE: the type is not visible
-# to vendor policy, so it cannot even be dontaudited here. Left as a 2-line boot denial (stock: same).
-# D52 (next build): sys_nice unlocked the follow-on step — modprobe renices a kernel thread at boot.
+# modprobe renices a kernel thread at boot
 allow vendor_modprobe kernel:process setsched;

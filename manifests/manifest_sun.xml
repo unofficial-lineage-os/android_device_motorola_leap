@@ -6,7 +6,7 @@
 -->
 <!-- NOTE: the stock file's sepolicy-version block was removed here. Android 16 forces
      BOARD_SEPOLICY_VERS = PLATFORM_SEPOLICY_VERSION (.KATI_READONLY, build/make/core/config.mk:881),
-     and we build the vendor partition sepolicy from source, so it is at platform level.
+     and the vendor sepolicy is built from source, so it is at platform level.
      target-level is kept at the level the A15-era blob HALs actually target. -->
 <manifest version="8.0" type="device" target-level="202404">
     <hal format="aidl">

@@ -1,4 +1,4 @@
-// leap D20: framework-res values that stock ships in its auto-generated vendor/product RROs.
+// framework-res values that stock ships in its auto-generated vendor/product RROs.
 runtime_resource_overlay {
     name: "LeapFrameworksResOverlay",
     vendor: true,

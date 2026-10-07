@@ -16,7 +16,7 @@
         <library name="dap" path="libswdap.so"/>
         <library name="dvl" path="libdlbvol.so"/>
         <!--DOLBY SPATIALIZER--> 
-        <!-- leap D19-g: Dolby spatializer removed — A15 libswspatializer(aidl) SIGSEGVs in DlbEffectContext::getParams on A16 framework queries -->
+        <!-- Dolby spatializer removed — A15 libswspatializer(aidl) SIGSEGVs in DlbEffectContext::getParams on A16 framework queries -->
         <!--DOLBY GAME-->
         <library name="gamedap" path="libswgamedap.so"/>
         <!--DOLBY END-->

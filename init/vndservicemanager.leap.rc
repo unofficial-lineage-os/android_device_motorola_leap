@@ -1,4 +1,4 @@
-# leap D24: stock vndservicemanager (see proprietary-files.txt); replaces the source module's rc.
+# Stock vndservicemanager (see proprietary-files.txt), in place of the source one.
 service vndservicemanager /vendor/bin/hw/vndservicemanager-stock /dev/vndbinder
     class core
     user system

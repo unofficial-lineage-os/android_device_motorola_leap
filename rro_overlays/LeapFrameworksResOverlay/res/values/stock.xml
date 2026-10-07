@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- leap D34: every remaining value from stock framework-res__leap__auto_generated_rro_vendor.apk and
+<!-- every remaining value from stock framework-res__leap__auto_generated_rro_vendor.apk and
      framework-res__leap_g__auto_generated_rro_product.apk (A16, decoded with apktool), minus the keys config.xml
      already sets (those win). Moto-private names overlay nothing on AOSP and are harmless. -->
 <resources>

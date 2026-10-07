@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- leap D20: from stock framework-res__leap__auto_generated_rro_vendor.apk and
+<!-- from stock framework-res__leap__auto_generated_rro_vendor.apk and
      framework-res__leap_g__auto_generated_rro_product.apk (aapt dump), plus the AOSP fold keys
-     stock does not need (it uses Moto's CLI shell for the cover panel; we use AOSP's fold model). -->
+     stock does not need (stock runs its own shell on the cover display; LineageOS uses the AOSP fold model). -->
 <resources>
     <!-- Fold: states per fold/device_state_configuration.xml (stock's) -->
     <integer-array name="config_foldedDeviceStates">
@@ -20,7 +20,7 @@
     </integer-array>
     <integer-array name="config_rearDisplayDeviceStates">
     </integer-array>
-    <!-- Per-display resource index (D23, from arcfox): without it DisplayUtils.getDisplayUniqueIdConfigIndex()
+    <!-- Per-display resource index (from arcfox): without it DisplayUtils.getDisplayUniqueIdConfigIndex()
          returns -1 and the cover panel inherits the inner panel's cutout and corners. -->
     <string-array name="config_displayUniqueIdArray" translatable="false">
         <item>local:4630947043778501779</item>
@@ -51,7 +51,7 @@
     <bool name="config_lidControlsSleep">false</bool>
     <!-- zeekr: fold lock behavior setting; do not mask a cutout on the cover panel -->
     <bool name="config_fold_lock_behavior">true</bool>
-    <!-- D30: cover-panel camera block is deliberately NOT a cutout (arcfox): on AOSP a bottom cutout
+    <!-- cover-panel camera block is deliberately NOT a cutout (arcfox): on AOSP a bottom cutout
          becomes a black masked band / full-width dead strip. Wallpaper covers the whole panel; the dock,
          nav bar and keyboard are kept above the cameras via Launcher3/SystemUI dimens instead. -->
     <string name="config_secondaryBuiltInDisplayCutout" translatable="false"></string>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- leap D19-i: Motorola telephony/IMS extension libraries that stock's ims.apk declares via
+<!-- Motorola telephony/IMS extension libraries that stock's ims.apk declares via
      uses-library (moto-telephony, moto-ims-ext). Stock declares them somewhere not present in
      the dump's permissions dirs; declared here so PackageManager can resolve them. -->
 <permissions>

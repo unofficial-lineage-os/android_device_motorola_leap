@@ -15,8 +15,8 @@
      limitations under the License.
 -->
 
-<!-- leap D28: upstream device_profiles.xml minus the 3_by_3 grid-option (arcfox 4ad4e1c): Launcher3 picks the
-     grid by distance from the MINIMUM size across BOTH panels, a geometry no panel has; 3_by_3 must not win. D31: the 5-column phone grids are removed too, so 4_by_5 wins on both panels as on
+<!-- Upstream device_profiles.xml minus the 3_by_3 grid-option (arcfox 4ad4e1c): Launcher3 picks the
+     grid by distance from the MINIMUM size across BOTH panels, a geometry no panel has; 3_by_3 must not win. The 5-column phone grids are removed too, so 4_by_5 wins on both panels as on
      arcfox — the 5x5 grid it picked on leap does not scale to fit the cover (1080x1272 minus the lifted dock):
      labels clipped, icons small. 4_by_5 is Launcher3's scaled phone grid. -->
 <profiles xmlns:launcher="http://schemas.android.com/apk/res-auto" >
@@ -71,11 +71,11 @@
         launcher:inlineNavButtonsEndSpacing="@dimen/taskbar_button_margin_split"
         launcher:defaultLayoutId="@xml/default_workspace_4x5"
         launcher:deviceCategory="phone|multi_display" >
-        <!-- leap D33: closest option to leap's aggregate geometry (inner 408x997dp, cover 480x565dp minus insets):
+        <!-- Closest option to leap's aggregate geometry (inner 408x997dp, cover 480x565dp minus insets):
              54dp icons so a 4x5 workspace cell on the 1080x1272 cover (210px) still fits icon + label.
              LineageOS's own options all use 65dp, which leaves no room for labels on the cover.
-             D39: the cover workspace cell is only 136px (60dp) tall after scale-to-fit, so icon+label
-             must fit 60dp: 44dp icon + 11dp text (uiautomator bounds, tools/cover14.png). -->
+             The cover workspace cell is only 136px (60dp) tall after scale-to-fit, so icon and label
+             must fit 60dp: 44dp icon + 11dp text. -->
         <display-option
             launcher:name="leap"
             launcher:minWidthDps="400"

@@ -6,9 +6,7 @@
 soong_namespace {
 }
 
-// D20: stock ships /vendor/firmware/wlan/qca_cld/peach_v2/ as three SYMLINKS (extract-utils does not
-// carry symlinks). Without them the qca_cld3_peach_v2 driver refuses to load:
-// "android.hardware.wifi-service: Failed to load WiFi driver / write driver state control param: Invalid argument".
+// Stock ships these WLAN firmware files as symlinks, which extract-utils does not carry.
 install_symlink {
     name: "leap_wlan_symlink_qcom_cfg",
     vendor: true,

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- leap D34: default-config values from stock SystemUI__leap_g__auto_generated_rro_product.apk (A16, via aapt2), minus what config.xml sets. -->
+<!-- default-config values from stock SystemUI__leap_g__auto_generated_rro_product.apk (A16, via aapt2), minus what config.xml sets. -->
 <resources>
     <string-array name="config_controlsPreferredPackages" translatable="false">
         <item>com.google.android.apps.chromecast.app</item>

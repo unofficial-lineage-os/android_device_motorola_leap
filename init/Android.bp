@@ -11,7 +11,7 @@ prebuilt_etc {
     vendor_ramdisk_available: true,
 }
 
-// recovery-only: USB gadget bring-up + /dev/block/bootdevice symlink
+// Recovery: USB gadget and the /dev/block/bootdevice symlink
 prebuilt_etc {
     name: "init.qcom.recovery.rc",
     src: "init.qcom.recovery.rc",
@@ -19,11 +19,7 @@ prebuilt_etc {
     recovery: true,
 }
 
-// Vendor hardware init scripts (findings.md D13).
-// init.rc does `import /vendor/etc/init/hw/init.${ro.hardware}.rc` (ro.hardware=qcom),
-// so without init.qcom.rc NOTHING vendor-side starts: no USB gadget (init.mmi.usb.rc),
-// no display, no HAL services. These are stock leap A15 scripts, taken verbatim from
-// firmware/dump/vendor/etc/init/hw/. [D refs/sm8750-common/init/Android.bp:31,45]
+// Stock vendor init scripts (vendor/etc/init/hw). init.rc imports init.${ro.hardware}.rc from there.
 
 prebuilt_etc {
     name: "init.mmi.charge_only.rc",
@@ -151,8 +147,7 @@ prebuilt_etc {
     vendor: true,
 }
 
-// D15x: mount points that stock's vendor has as empty dirs (dodge's common tree only defines
-// firmware_mnt/dsp/bt_firmware in the root namespace; fsg + Moto's super_* live elsewhere).
+// Mount points for the stock firmware partitions
 mkdir {
     name: "vendor_fsg_mountpoint_leap",
     dir: "fsg",

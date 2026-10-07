@@ -1,7 +1,9 @@
-# leap — kernel + modules + DTB from source (D45); included by BoardConfig.mk.
-# Sources: kernel/motorola/sm8750 (MotorolaMobilityLLC/kernel-msm @ MMI-W1VLS36H.59-55-5-1, 6.6.82),
-#   sm8750-modules (LOS oneplus/qcom-generic techpack copies + Motorola's audio/camera/wlan/motorola modules),
-#   sm8750-devicetrees (kernel-devicetree @ tag) linked at arch/arm64/boot/dts/vendor.
+#
+# SPDX-FileCopyrightText: The LineageOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+
+# Kernel
 
 TARGET_KERNEL_SOURCE := kernel/motorola/sm8750
 TARGET_KERNEL_VERSION := 6.6
@@ -14,13 +16,9 @@ TARGET_KERNEL_CONFIG_EXT := $(DEVICE_PATH)/kernel/leap-los.config
 BOARD_KERNEL_IMAGE_NAME := Image
 BOARD_USES_GENERIC_KERNEL_IMAGE := true
 
-# CONFIG_DRM_DYNAMIC_REFRESH_RATE=y (D60): our msm_drm exports dsi_freq_head, so the touch drivers follow the panel
-# refresh rate. It is a module-build variable only; kernel/leap-los.config keeps it unset in the kernel image.
-# clang 21 vs a 6.6.82 tree with CONFIG_WERROR=y; Motorola's kbuild needs the OEM DTB switch, the SoC switch,
-# the profile-derived WLAN configs bazel would resolve, and the stub include root for moto-kernel-modules.
-# NOTE: no comments inside the continued assignment — a "#" swallows the trailing backslash and silently drops the
-# rest of the flags (that hid the touch-driver options for three builds). Motorola Kbuilds default ANDROID_BUILD_TOP to
-# $(srctree)/.. = kernel/motorola, where motorola/kernel/modules and kernel_platform/* are symlinks.
+# Motorola's Kbuild files expect the options its Bazel build sets: the device DTB switch, the SoC,
+# the WLAN profile and the touch/display features. CONFIG_DRM_DYNAMIC_REFRESH_RATE lets the touch
+# drivers follow the panel refresh rate; it is set for the module builds only.
 TARGET_KERNEL_ADDITIONAL_FLAGS := \
     KCFLAGS="-Wno-unknown-warning-option -Wno-default-const-init-unsafe -Wno-error=missing-prototypes -Wno-missing-prototypes -Wno-error=format -Wno-error=enum-compare -Wno-error=enum-compare-conditional -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wno-error=unused-function" \
     CONFIG_MMI_DEVICE_DTBS=y TARGET_BOARD_PLATFORM=sun CONFIG_ARCH_SUN=y \
@@ -28,7 +26,7 @@ TARGET_KERNEL_ADDITIONAL_FLAGS := \
     CONFIG_DRM_PANEL_EVENT_NOTIFICATIONS=y CONFIG_DRM_DYNAMIC_REFRESH_RATE=y CONFIG_BOARD_USES_DOUBLE_TAP_CTRL=y CONFIG_INPUT_TOUCHSCREEN_MMI=y CONFIG_TOUCHSCREEN_GOODIX_BRL_SPI=y CONFIG_BUILD_FOR_ANDROID_V=y GKI_OBJ_MODULE_DIR=
 
 TARGET_KERNEL_EXT_MODULE_ROOT := kernel/motorola/sm8750-modules
-# Motorola entries are dependency-ordered (sensors/mmi_relay/mmi_info/bm_adsp_ulog first: hall, glink charger, touch need their Module.symvers)
+# The Motorola modules are in dependency order: later ones link against the Module.symvers of earlier ones.
 TARGET_KERNEL_EXT_MODULES := \
     qcom/opensource/mmrm-driver \
     qcom/opensource/mm-drivers/hw_fence \
@@ -87,13 +85,13 @@ TARGET_KERNEL_EXT_MODULES := \
     motorola/drivers/uwb/qm358:kbuild \
     motorola/drivers/misc/utag:kbuild
 
-# stock names for the three Motorola modules whose source names differ
+# Install these modules under their stock names
 TARGET_MODULE_ALIASES := \
     snd-soc-tfa98xx.ko:tfa98xx_dlkm.ko \
     st21nfc.ko:stm_nfc_i2c.ko \
     st54spi_gpio.ko:stm_st54se_gpio.ko
 
-# Module placement = stock's load lists (names identical). Modules not in any list land in vendor_dlkm.
+# Kernel modules
 BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/modules.load.vendor_ramdisk.src))
 BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/modules.load.recovery.src))
 BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/modules.load.src))
@@ -101,15 +99,12 @@ BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(DEVICE_PATH)/modules.blocklist
 BOOT_KERNEL_MODULES := $(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD)
 SYSTEM_KERNEL_MODULES := $(strip $(shell cat $(DEVICE_PATH)/modules.load.system_dlkm.src))
 
-# DTB/DTBO from source (sun-tp[-v2]-leap-base + sun-leap-evb/evt1/pvt1 overlays)
+# DTB
 BOARD_USES_QCOM_MERGE_DTBS_SCRIPT := true
-
-# D53: ship only the two base DTBs stock ships (sun-tp-leap-base, sun-tp-v2-leap-base), merged with the techpack
-# overlays by merge_dtbs.py (merged output keeps the base name). Pattern must END at -leap-base: Moto's Makefile also
-# emits pre-combined <base>-<board-overlay>.dtb files which sort FIRST and ABL would pick them (same ids) and then apply
-# the dtbo board overlay a second time on top of the wrong board variant.
+# Only the two base DTBs stock ships. The pattern must end at -leap-base: the Motorola Makefile also
+# builds pre-combined <base>-<board>.dtb files, which the bootloader would otherwise pick first.
 TARGET_MERGE_DTBS_WILDCARD := sun-tp*-leap-base
 
-# D53: build the kernel with the toolchain Moto's tree pins (build.config.constants: CLANG_VERSION=r510928, clang 18 —
-# the same compiler the shipped GKI 6.6.118 reports). Our clang-21 build of 6.6.82 started and panicked in first stage.
+# Toolchain
+# The clang the kernel pins in build.config.constants (r510928), from the kernel 6.6 platform.
 TARGET_KERNEL_CLANG_PATH := $(abspath kernel/platform/kernel-$(TARGET_KERNEL_VERSION)/prebuilts/clang/host/linux-x86/clang-r510928)

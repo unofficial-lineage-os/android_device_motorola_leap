@@ -2,7 +2,7 @@
 /(vendor|system/vendor)/bin/hw/vendor\.lineage\.livedisplay-service\.leap    u:object_r:hal_lineage_livedisplay_qti_exec:s0
 
 
-# D38: our renamed vendor-private copies of libs stock labels same_process_hal_file (loaded by coredomain via sphal)
+# Renamed stock copies of libraries that stock labels same_process_hal_file
 /(vendor|system/vendor)/lib(64)?/libRSCpuRef-vendor\.so    u:object_r:same_process_hal_file:s0
 /(vendor|system/vendor)/lib(64)?/libRSDriver-vendor\.so    u:object_r:same_process_hal_file:s0
 /(vendor|system/vendor)/lib(64)?/libRS_internal-vendor\.so    u:object_r:same_process_hal_file:s0

@@ -362,10 +362,7 @@ ro.vendor.uwb.firmware.dir=/vendor/firmware/qorvo
 ro.vendor.uwb.qm35_dev_uci_path=/dev/uci0
 ro.vendor.vendor.version=AU_LINUX_ANDROID_LA.VENDOR.15.4.0.R1.11.00.00.1168.100
 ro.vendor.vm.ssr.enable=false
-# ro.virtual_ab.* REMOVED 2026-09-19 (findings.md D10): these were copied from stock
-# vendor/build.prop and declared userspace snapshots with no snapuserd shipped -> bootloop.
-# They are now set by the compression_with_xor.mk inherit in device.mk, which also
-# installs snapuserd{,.vendor_ramdisk,.recovery}. Do not re-add them here (duplicate sysprop).
+# ro.virtual_ab.* come from compression_with_xor.mk (device.mk).
 sys.usb.mtp.batchcancel=1
 sys.vendor.shutdown.waittime=500
 vendor.com.secondary_display.default_rotation=ROTATION_DOWN

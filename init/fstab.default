@@ -1,19 +1,11 @@
 # Android fstab for Motorola Razr Ultra 2025 (leap)
-# Structure matched VERBATIM to stock first_stage_ramdisk/fstab.qcom (A15 V2VL35.42-148-2-5-1),
-# extracted from the stock vendor_boot.img ramdisk. See findings.md D12.
+# Follows the stock first_stage_ramdisk/fstab.qcom.
 #
-# Two entries per logical partition (erofs then ext4) is STOCK'S pattern and is deliberate:
-# fs_mgr tries each entry for a mount point in order until one mounts, so the same fstab works
-# whether a partition was built as EROFS or ext4. Our build currently produces ext4 for
-# system/system_ext/product and EROFS for vendor/vendor_dlkm/system_dlkm, but hard-coding one
-# type per mount point makes the fstab silently wrong the moment a filesystem type changes.
+# Two entries per logical partition (erofs, then ext4), as on stock: fs_mgr tries each entry for
+# a mount point in order, so the fstab works whichever filesystem a partition is built with.
 #
-# ONE DELIBERATE DEVIATION FROM STOCK: system_dlkm uses avb=vbmeta_system, not stock's
-# avb=vbmeta. Our BoardConfig sets
-#   BOARD_AVB_VBMETA_SYSTEM := system system_dlkm system_ext product
-# so the system_dlkm hashtree descriptor lives in vbmeta_system.img; vbmeta.img has no
-# system_dlkm descriptor (verified with avbtool info_image). Copying stock's value here would
-# point fs_mgr at a descriptor that does not exist.
+# Unlike stock, system_dlkm uses avb=vbmeta_system: BOARD_AVB_VBMETA_SYSTEM puts its hashtree
+# descriptor in vbmeta_system.
 #
 #<src>                    <mnt_point>          <type>  <mnt_flags and options>                    <fs_mgr_flags>
 system                                                  /system                erofs   ro                                                   wait,slotselect,avb=vbmeta_system,logical,first_stage_mount,avb_keys=/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey:/avb/t-gsi.avbpubkey:/avb/u-gsi.avbpubkey:/avb/v-gsi.avbpubkey

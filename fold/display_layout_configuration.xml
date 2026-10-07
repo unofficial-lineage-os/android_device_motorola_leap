@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8' standalone='yes' ?>
-<!-- leap D20: device-state -> display layout. States follow stock's device_state_configuration.xml
+<!-- device-state -> display layout. States follow stock's device_state_configuration.xml
      (0 CLOSED_HALL, 1 CLOSED, 2 TENT, 3 HALF_OPENED_QVD = cover panel primary; 4 HALF_OPENED_MAIN,
      5 OPENED, 6 OPENED_HALL = inner panel primary). Physical display IDs from SurfaceFlinger on the
      first boot (HWC display 0 port 147 = inner 1224x2992, HWC display 1 port 148 = cover 1080x1272). -->

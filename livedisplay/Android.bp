@@ -7,7 +7,7 @@
 //   IAntiFlicker ("DC dimming")            -> IDisplayPanel::setDcMode (txn 4)
 //   ISunlightEnhancement ("Outdoor mode")  -> IDisplayPanel::setMode HIGH_BRIGHT/NORMAL (txn 5)
 // leap has no writable panel-feature sysfs nodes; stock's displaypanel.default.so drives them through
-// /dev/dri/card0, so we drive the stock HAL instead.
+// /dev/dri/card0, so this service drives the stock HAL instead.
 
 cc_binary {
     name: "vendor.lineage.livedisplay-service.leap",

@@ -1,5 +1,4 @@
-# proprietary-files.txt — RECONSTRUCTED 2026-08-28 from leap-vendor.mk after fs corruption.
-# Curated set recovered from the intact generated makefile; validated via regen-diff + m nothing.
+# All blobs are from the stock W1VLS36H.59-128-4-6 firmware (Android 16)
 vendor/odm/etc/permissions/sku_neu/unavail.android.hardware.sensor.barometer.xml:odm/etc/permissions/sku_neu/unavail.android.hardware.sensor.barometer.xml
 vendor/odm/etc/permissions/sku_neup/android.hardware.uwb.xml:odm/etc/permissions/sku_neup/android.hardware.uwb.xml
 vendor/odm/etc/vintf/manifest_dne.xml:odm/etc/vintf/manifest_dne.xml
@@ -2513,13 +2512,7 @@ vendor/usr/idc/uinput-fpc.idc
 vendor/usr/keylayout/goodix_ts.kl
 vendor/usr/keylayout/uinput-fpc.kl
 
-# ---- ADDED 2026-09-20 (D15): stock vendor files that were never imported ----
-# proprietary-files.txt was reconstructed after fs corruption from an already-curated makefile,
-# so ~450 stock vendor files (every init.*.sh script, the camera HAL libs, audio effect libs,
-# init rc + VINTF fragments for installed HALs, ...) were silently missing. This list is
-# stock-vendor MINUS what our build already produces, MINUS the deliberate display/WFD
-# exclusions (see memory/display-stack-decision), MINUS anything a source module provides.
-# Generated mechanically: see HANDOFF-2026-09-20.md / findings.md D15.
+# Init scripts, HALs and their configuration
 vendor/bin/aecxsimulator;DISABLE_DEPS
 vendor/bin/apanic_annotate.sh
 vendor/bin/apanic_copy.sh
@@ -2796,47 +2789,9 @@ vendor/lib64/soundfx/libswspatializeraidl.so;DISABLE_DEPS
 vendor/lib64/vendor.qti.hardware.camera.aon-service-impl.so;DISABLE_DEPS
 vendor/lib64/vendor.qti.hardware.camera.offlinecamera-service-impl.so;DISABLE_DEPS
 
-# (D15 note) NOT imported as blobs — built from source in-tree, a prebuilt of the same name collides
-# (init.qti.media.sh + vendor.qti.audio-adsprpc-service.rc were re-added as blobs: their source
-#  definitions live in a soong_namespace this product does not import, so they are unreachable):
+# Their source definitions are in a Soong namespace this device does not import
 vendor/bin/init.qti.media.sh
-#   vendor/lib64/android.hardware.common-V2-ndk_platform.so
-#   vendor/lib64/com.motorola.hardware.biometric.fingerprint-V1-ndk.so
-#   vendor/lib64/com.motorola.hardware.biometric.fingerprint@1.0.so
-# (D15c) StrongBox/SPU keymint family NOT shipped for bring-up: libspukeymint links
-#   android.hardware.security.sharedsecret-V2-ndk (unfrozen -> unusable by vendor in this release
-#   config) and libtpa mixes keymint V3/V4; cannot be linked at build or resolved at runtime.
-#   IKeyMintDevice/strongbox + IRemotelyProvisionedComponent/strongbox removed from manifest_sun.xml.
-#   vendor/bin/hw/android.hardware.security.keymint-service-spu-qti
-#   vendor/etc/init/android.hardware.security.keymint-service-spu-qti.rc
-#   vendor/lib64/libspukeymint.so
-#   vendor/lib64/libspukeymintprovision.so
-#   vendor/lib64/libtpa.so
-#   vendor/bin/KmInstallKeybox
-#   vendor/bin/KmValidateKeybox
-#   vendor/bin/spu_install_keybox
-#   vendor/bin/mot_tcmd
-#   vendor/lib64/libpkip.so
-# (D15d) FPC fingerprint service NOT shipped for bring-up: the A15 blob links biometrics.common-V3
-#   while com.motorola.hardware.biometric.fingerprint (source, hardware/motorola/interfaces) pulls V4
-#   -> "multiple versions of the same aidl_interface". Manifest entries for IFingerprint and
-#   com.motorola.hardware.biometric.fingerprint removed so no client waits on a dead HAL.
-#   vendor/bin/hw/android.hardware.biometrics.fingerprint-service.fpc
-#   vendor/etc/init/android.hardware.biometrics.fingerprint-service.fpc.rc
-#   vendor/etc/vintf/manifest/android.hardware.biometrics.fingerprint-service.fpc.xml
-# (D15e) ;DISABLE_DEPS above: A15 blobs that link BOTH allocator-V1 and -V2, or older audio.core/
-#   audio.common.types/effect versions alongside source libs built against the latest ->
-#   soong "multiple versions of the same aidl_interface". The needed older interface libs are
-#   installed explicitly in device.mk (<iface>-Vn-ndk.vendor, dodge pattern). qvrservice (XR) dropped.
-#   vendor/bin/hw/qvrservice
-#   vendor/lib64/libqvrservice.so
-# (D15f/g -> D15q) The stock rc + VINTF fragments below collided ("overriding commands for target")
-#   with install rules exported by SOURCE modules of the same name (gralloc, memtrack, usb, demura,
-#   vibrator, qspa, nxp nfc). D15f/g dropped the blob side assuming the source copy is installed —
-#   WRONG: the blob BINARY is what gets selected (prefer), so the source module's rc/xml rules are
-#   orphans (ninja: no reverse deps) and the shipped HAL had NO rc and NO VINTF entry -> never
-#   started / never declared. Restored here from stock under renamed destinations (init and VINTF
-#   load every file in the directory; the name is irrelevant) so nothing collides.
+# Init and VINTF files of blob HALs, renamed where a source module installs the same name
 vendor/etc/init/audiohalservice_qti.rc
 vendor/etc/init/vendor.qti.audio-adsprpc-service.rc
 vendor/etc/init/android.hardware.usb-service.qti.rc:vendor/etc/init/android.hardware.usb-service.qti.leap.rc
@@ -2852,11 +2807,8 @@ vendor/etc/vintf/manifest/vendor.qti.hardware.display.allocator-service.xml:vend
 vendor/etc/vintf/manifest/vendor.qti.hardware.display.demura-service.xml:vendor/etc/vintf/manifest/vendor.qti.hardware.display.demura-service.leap.xml
 vendor/etc/vintf/manifest/vendor.qti.qspa-service.xml:vendor/etc/vintf/manifest/vendor.qti.qspa-service.leap.xml
 
-# ---- D15h/k: STOCK PREBUILT AUDIO HAL. The A15-era source tree hardware/qcom-caf/sm8750/audio is hidden
-# behind its own soong namespace (local patch), so these keep their real module names. ----
-# Module names carry a _prebuilt suffix because identically-named SOURCE modules exist in the tree
-# (hardware/qcom-caf/sm8750/audio); the installed filenames are unchanged. DISABLE_DEPS: these link
-# A15 AIDL versions (audio.core-V2, effect-V2, types-V3, sounddose-V1) installed via .vendor packages.
+# Audio HAL
+# The stock HAL links the Android 15 audio AIDL versions, which device.mk installs.
 vendor/lib64/hw/libaudiocorehal.qti.so;DISABLE_DEPS
 vendor/lib64/hw/libaudiocorehal.default.so;DISABLE_DEPS
 vendor/lib64/hw/libaudioeffecthal.qti.so;DISABLE_DEPS
@@ -2867,36 +2819,21 @@ vendor/lib64/soundfx/libvolumelistener.so;DISABLE_DEPS
 vendor/lib64/libpaleventnotifier.so;DISABLE_DEPS
 vendor/lib64/libaudioplatformconverter.qti.so;DISABLE_DEPS
 
-# (D15i) the two audio VINTF fragments are NOT blobs: prebuilt_etc names cannot be renamed by
-#   MODULE=, and the same names exist as source prebuilt_etc in hardware/qcom-caf/sm8750/audio
-#   ("found in multiple namespaces"). The source XMLs are used (identical HAL declarations).
-# (D15j) OVERRIDES= on the audio prebuilts: hardware/qcom-caf/sm8750/audio/primary-hal/configs/sun/
-#   audio-modules.mk (inherited via the qcom common config) lists the SOURCE libs in PRODUCT_PACKAGES,
-#   so both sides installed the same path ("overriding commands for target"). The prebuilt now
-#   overrides the source module and make drops the source install.
+# Audio VINTF fragments
 vendor/etc/vintf/manifest/manifest_audiocorehal_default.xml
 vendor/etc/vintf/manifest/audioeffectservice_qti.xml
-# (D15k) AIDL interface libs previously provided by the now-hidden source audio tree, needed by blobs:
+# Interface libraries the audio blobs link
 vendor/lib64/vendor.qti.hardware.agm-V1-ndk.so;DISABLE_DEPS
 vendor/lib64/vendor.qti.hardware.pal-V1-ndk.so;DISABLE_DEPS
-# (D15l) AOSP audio.bluetooth.default needs HIDL BT-audio headers absent in A16; stock's blob is dlopen'ed by
-#   filename by the audio HAL, so a renamed prebuilt module serves it without touching the source module:
-#   vendor/lib64/hw/audio.bluetooth.default.so  <- NOT shipped (D15l/m): soong emits an install rule for the
-#   root-namespace AOSP module packages/modules/Bluetooth/.../audio.bluetooth.default at the same path even when
-#   it is not selected, so any prebuilt there is a duplicate rule. KNOWN GAP: Bluetooth audio (A2DP/HFP) until
-#   that AOSP module builds here (needs HIDL BT-audio headers) or is disabled by a local patch.
 
-# (D15z) STOCK display composer. The source composer (hardware/qcom-caf/sm8750/display) crashes in the
-# BLOB libsdmclient.so (sdm::ConcurrencyMgr::IsDisplayConnected null deref, AidlComposer ctor): the D15
-# bulk import made the whole display core blobs (findings.md D15q note), so the composer must be the
-# stock one too. rc/xml renamed (source rules own the stock names).
+# Display composer
+# The display stack is all blobs. Its init and VINTF files are renamed: source modules install the stock names.
 vendor/bin/hw/vendor.qti.hardware.display.composer-service;DISABLE_DEPS
 vendor/etc/init/vendor.qti.hardware.display.composer-service.rc:vendor/etc/init/vendor.qti.hardware.display.composer-service.leap.rc
 vendor/etc/vintf/manifest/vendor.qti.hardware.display.composer-service3_v3.xml:vendor/etc/vintf/manifest/vendor.qti.hardware.display.composer-service3_v3.leap.xml
 
-# (D16-b) STOCK display AIDL libs: the A15 display blobs were built against A15's generated interface code;
-# the A16 tree's versions trap (SIGILL in libsdmclient GetExtendedDisplayResolutions). Renamed modules so they
-# do not collide with the aidl_interface-generated ones; consumers carry ;DISABLE_DEPS.
+# Display interface libraries the display blobs were built against, renamed so they do not
+# collide with the ones generated from source
 vendor/lib64/vendor.qti.hardware.display.aiqe-V2-ndk.so;DISABLE_DEPS
 vendor/lib64/vendor.qti.hardware.display.color-V1-ndk.so;DISABLE_DEPS
 vendor/lib64/vendor.qti.hardware.display.composer3-V1-ndk.so;DISABLE_DEPS
@@ -2915,11 +2852,8 @@ vendor/lib64/vendor.qti.hardware.display.config-V9-ndk.so;DISABLE_DEPS
 vendor/lib64/vendor.qti.hardware.display.demura-V1-ndk.so;DISABLE_DEPS
 vendor/lib64/vendor.qti.hardware.display.postproc-V1-ndk.so;DISABLE_DEPS
 
-# (D17) ALL-STOCK VENDOR: the vendor is A15-generation even under stock Android 16 (the A16 package ships
-# ro.vendor.build.version.release=15). Blobs must run on the vendor's OWN support libraries, not A16-built
-# ones (libtinyxml2/libdrm/… ABI: PAC autiasp SIGILL in libsdmclient, CFI traps). Everything stock ships
-# in vendor/lib64 + bin that the AOSP base does not itself install is imported here, DISABLE_DEPS, renamed
-# where a source module of the same name exists. See findings.md D17.
+# Support libraries the vendor blobs were built against. The vendor is Android 15 generation, so
+# the blobs use these instead of the Android 16 builds, renamed where a source module has the same name.
 vendor/lib64/android.hardware.audio.common-util.so:vendor/lib64/android.hardware.audio.common-util-vendor.so;DISABLE_DEPS
 vendor/lib64/android.hardware.biometrics.common.util.so:vendor/lib64/android.hardware.biometrics.common.util-vendor.so;DISABLE_DEPS
 vendor/lib64/android.hardware.bluetooth.audio-impl.so:vendor/lib64/android.hardware.bluetooth.audio-impl-vendor.so;DISABLE_DEPS
@@ -2935,10 +2869,9 @@ vendor/lib64/libstagefright_aidl_bufferpool2.so:vendor/lib64/libstagefright_aidl
 vendor/lib64/libstagefright_bufferqueue_helper.so:vendor/lib64/libstagefright_bufferqueue_helper-vendor.so;DISABLE_DEPS
 vendor/lib64/hw/android.hardware.graphics.mapper@4.0-impl-qti-display.so;DISABLE_DEPS
 vendor/bin/hw/android.hardware.health-service.qti;DISABLE_DEPS
-# (D17-b) freed after retiring AOSP-root vendor modules
 
-# (D17-c) stock copies of the AOSP libraries the vendor blobs were built against, under -vendor names;
-# every stock blob is re-pointed to them via blob_fixups in extract-files.py (findings.md D17-c/d).
+# Stock copies of AOSP libraries the vendor blobs were built against, renamed with a -vendor suffix.
+# extract-files.py points the blobs at them.
 vendor/lib64/libRSCpuRef.so:vendor/lib64/libRSCpuRef-vendor.so;DISABLE_DEPS
 vendor/lib64/libRSDriver.so:vendor/lib64/libRSDriver-vendor.so;DISABLE_DEPS
 vendor/lib64/libRS_internal.so:vendor/lib64/libRS_internal-vendor.so;DISABLE_DEPS
@@ -3046,35 +2979,22 @@ vendor/lib64/libziparchive.so:vendor/lib64/libziparchive-vendor.so;DISABLE_DEPS
 vendor/lib64/server_configurable_flags.so:vendor/lib64/server_configurable_flags-vendor.so;DISABLE_DEPS
 vendor/lib64/wifi_legacy.so:vendor/lib64/wifi_legacy-vendor.so;DISABLE_DEPS
 
-# D19: HAL binary/rc/VINTF completeness (findings.md D19). system_server crash-looped on
-# "IHealth service instance default isn't available": the health blob was imported (D17) but its
-# init rc + VINTF fragment were not, so vendor.health-default never started. Same class for boot,
-# power (xml only), bluetooth.audio (xml only), ipacm/tetheroffload. rc/xml renamed .leap.* so they
-# never collide with the same-named source modules' init_rc/vintf_fragments rules (D15q).
-# boot-service.qti and ipacm blobs are NOT importable ("found in multiple namespaces") -> SOURCE, see device.mk.
+# Init and VINTF files for the health, power and Bluetooth audio HALs, renamed so they do not
+# collide with those of the source modules
 vendor/etc/init/android.hardware.health-service.qti.rc:vendor/etc/init/android.hardware.health-service.qti.leap.rc
 vendor/etc/vintf/manifest/android.hardware.health-service.qti.xml:vendor/etc/vintf/manifest/android.hardware.health-service.qti.leap.xml
 vendor/etc/vintf/manifest/power.xml:vendor/etc/vintf/manifest/power.leap.xml
 vendor/etc/vintf/manifest/bluetooth_audio.xml:vendor/etc/vintf/manifest/bluetooth_audio.leap.xml
-# D19-b: protobuf 21.12 — the lineage compat shim installs to system_ext, invisible to vendor; 48 stock
-# blobs (qcrilNrd/libqcrilNr = RADIO, sensors.qti, contexthub, sensorscalibrate, qms, sec_nvm, qsap_*)
-# failed to link. Ship stock's copies as vendor-private libs (D17-d scheme, consumers re-pointed).
+# protobuf 21.12 for the vendor blobs: the LineageOS compatibility copy installs to system_ext
 vendor/lib64/libprotobuf-cpp-lite-21.12.so:vendor/lib64/libprotobuf-cpp-lite-21.12-vendor.so;DISABLE_DEPS
 vendor/lib64/libprotobuf-cpp-full-21.12.so:vendor/lib64/libprotobuf-cpp-full-21.12-vendor.so;DISABLE_DEPS
-# D19-e: source-built interface libs OLDER than stock's (symbol-set diff, findings.md D19-e). The
-# audio HAL failed to dlopen bluetooth.audio_sw ("cannot locate symbol ...Lhdcv5Configuration") so
-# IModule/bluetooth never registered, audioserver waited forever and system_server's AudioService
-# hit the Watchdog. Ship stock's copies vendor-private (D17-d), consumers re-pointed.
+# Newer than the source-built versions: the stock Bluetooth audio libraries need their symbols
 vendor/lib64/vendor.qti.hardware.bluetooth.audio-V2-ndk.so:vendor/lib64/vendor.qti.hardware.bluetooth.audio-V2-ndk-vendor.so;DISABLE_DEPS
 vendor/lib64/libcodec2_hidl@1.0.so:vendor/lib64/libcodec2_hidl@1.0-vendor.so;DISABLE_DEPS
-# D19-h: privileged-permission allowlists for the QTI system_ext priv-apps we ship (ims,
-# qcrilmsgtunnel). Without them system_server refuses to boot: "Signature|privileged permissions
-# not in privileged permission allowlist: org.codeaurora.ims …" (tools/logs_d19_0647).
+# Privileged permission allowlists for the Qualcomm telephony apps
 system_ext/etc/permissions/telephony_system-ext_privapp-permissions-qti.xml
 system_ext/etc/permissions/privapp-permissions-qti-system-ext.xml
-# D19-i: the QTI/Moto telephony Java libraries the shipped system_ext apps `uses-library`
-# (ims, qcrilmsgtunnel, QtiTelephonyService). Without them com.qti.phone crash-loops on
-# NoClassDefFoundError org.codeaurora.telephony.utils.Registrant (tools/logs_d19_0704).
+# Telephony libraries used by the Qualcomm and Motorola telephony apps
 system_ext/framework/qti-telephony-utils.jar
 system_ext/framework/qti-telephony-hidl-wrapper.jar
 system_ext/framework/qti-telephony-common.jar
@@ -3086,13 +3006,8 @@ product/framework/ims-ext-common.jar
 product/framework/qti-telephony-utils-prd.jar
 product/framework/qti-telephony-hidl-wrapper-prd.jar
 product/etc/permissions/telephony_product_privapp-permissions-qti.xml
-# D21: FPC fingerprint HAL (dropped in D15d for a source-side "multiple versions of biometrics.common";
-# under DISABLE_DEPS there is no dep analysis). Its V3 interface libs come from device.mk (.vendor).
+# Fingerprint
 vendor/bin/hw/android.hardware.biometrics.fingerprint-service.fpc;DISABLE_DEPS
-# D23: the app that serves vendor.qti.qesdsys.IQesdSys (its VINTF fragment was already shipped; 285 waits/boot)
-# D24: stock (A15) vndservicemanager. The A16 source vndservicemanager accepts no registrations from
-# the A15 blobs' libbinder-vendor (vndservice list = manager only): pm-service "Adding Peripheral
-# Manager service fail", vendor.dpmd SIGSEGV in NwMgrServiceImpl::registerAidlService, GPS "failed
-# to register for modem". Same-named import collides with the root-namespace source module, so it is
-# installed under bin/hw and started by init/vndservicemanager.leap.rc.
+# Stock vndservicemanager: the source one does not accept the Android 15 vendor services.
+# Installed under bin/hw and started by vndservicemanager.leap.rc.
 vendor/bin/vndservicemanager:vendor/bin/hw/vndservicemanager-stock;DISABLE_DEPS
