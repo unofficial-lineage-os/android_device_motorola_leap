@@ -68,11 +68,6 @@ BOARD_INCLUDE_DTB_IN_BOOTIMG := true
 BOARD_PREBUILT_DTBOIMAGE := device/motorola/leap/prebuilts/dtbo.img
 
 # Kernel + modules + DTB, all from source (D45): see BoardConfigKernelSource.mk.
-# D9: kernel UAPI headers. The build exports
-#   TARGET_PREBUILT_KERNEL_HEADERS=device/motorola/leap/prebuilts/kernel-headers.tar.gz
-# so gpt-utils and the other generated_kernel_headers users take bionic's cleaned UAPI tree instead of the
-# `generated_kernel_includes` genrule. build/soong/cc/cc.go reads it with Getenv, so it must be in the
-# environment, not only in make. To be replaced by the source kernel's own headers.
 include $(DEVICE_PATH)/BoardConfigKernelSource.mk
 # ---------------------------------------------------------------------------------------------
 
